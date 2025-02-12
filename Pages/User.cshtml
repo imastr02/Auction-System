@@ -1,0 +1,28 @@
+﻿@page
+@model Auction_System.Pages.UserModel
+@{
+
+}
+
+<h2>Welcome to your account</h2>
+
+<div>
+	First Name: @Model.appUser?.FirstName
+</div>
+
+<div>
+	Last Name: @Model.appUser?.LastName
+</div>
+
+<div>
+	Email: @Model.appUser?.Email
+</div>
+
+<div>
+	Role: 
+	<ul>
+		@foreach(var role in Model.UserRoles) {
+			<li>@role</li>
+		}
+	</ul>
+</div>

@@ -1,0 +1,106 @@
+﻿.register-container {
+    display: flex;
+    max-width: 900px;
+    margin: auto;
+    background: #1e1e2f;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.image-section {
+    flex: 1;
+    position: relative;
+}
+
+    .image-section img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.overlay-text {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    font-size: 18px;
+}
+
+.form-section {
+    flex: 1;
+    padding: 40px;
+    background: #29293d;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+p a {
+    color: #a879ff;
+    text-decoration: none;
+}
+
+.form-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    background: #3a3a52;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+
+.terms {
+    display: flex;
+    align-items: center;
+}
+
+    .terms input {
+        width: auto;
+        margin-right: 8px;
+    }
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: #a879ff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-google, .btn-apple {
+    flex: 1;
+    padding: 12px;
+    background: #3a3a52;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
