@@ -1,0 +1,206 @@
+﻿@page
+@model Auction_System.Pages.Buyer.BiddingProcessModel
+@using Microsoft.AspNetCore.Identity
+@using Auction_System.Models
+@inject UserManager<AppUser> UserManager
+
+<head>
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <style>
+        .auction-time {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        }
+
+        .auction-time h4 {
+        color: #333;
+        margin-bottom: 15px;
+        }
+
+        .auction-time strong {
+        color: #666;
+        }
+    </style>
+</head>
+
+
+
+<div class="product-page">
+    <!-- Left Section: Image Gallery -->
+    <div class="image-section">
+        <div class="main-image">
+            <img id="displayed-image" src="@(Model.Item?.ImagePath?.Split(',')[0] ?? "/images/default.jpg")" alt="Main Product Image">
+        </div>
+    </div>
+
+    <!-- Right Section: Product Details -->
+    <div class="details-section">
+        <h2>@Model.Item?.Title</h2>
+
+        <div class="seller-info">
+            <a class="seller-name" asp-page="/Shared/Seller/SellerRatings" asp-route-Id="@Model.Item?.SellerId">@(Model.Seller?.UserName ?? "Unknown Seller")</a>
+        </div>
+
+        <h3>Starting Price: @Model.Item?.StartingPrice.ToString("C")</h3> 
+
+
+
+        <div class="auction-time">
+            <h4>Auction Schedule</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>Start Time:</strong>
+                    @if (Model.Item.AuctionEvent != null)
+                    {
+                        <span>@Model.Item.AuctionEvent.StartTime.ToString("MM/dd/yyyy hh:mm tt")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not scheduled</span>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <strong>End Time:</strong>
+                    @if (Model.Item.AuctionEvent != null)
+                    {
+                        <span>@Model.Item.AuctionEvent.EndTime.ToString("MM/dd/yyyy hh:mm tt")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not scheduled</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Item.AuctionEvent?.Status == AuctionEvent.AuctionEventStatus.Completed)
+        {
+            <p>Winning Bid: @Model.Item.Bids?.FirstOrDefault()?.Amount?.ToString("C")</p>
+        }
+
+        @if (Model.Item.AuctionEvent?.Status == AuctionEvent.AuctionEventStatus.Completed && Model.Item.Winner != null)
+        {
+          @*   <div class="mt-4 p-3 bg-light rounded">
+                <h4>Auction Winner</h4>
+                <p class="lead">Congratulations!! @Model.Item.Winner.UserName</p>
+                <small class="text-muted">Auction ended on: @Model.Item.AuctionEvent.EndTime.ToString("MM/dd/yyyy hh:mm tt")</small>
+            </div>
+ *@
+            @if (Model.Item.Winner != null)
+            {
+                <div class="mt-4 p-3 bg-light rounded">
+                    <h4>Auction Winner</h4>
+                    <h4>Winner: @Model.Item.Winner.UserName</h4>
+                   @*  <p>Winning Bid: @Model.Item.Bids?.FirstOrDefault()?.Amount?.ToString("C")</p> *@
+                    <small class="text-muted">Auction ended on: @Model.Item.AuctionEvent.EndTime.ToString("MM/dd/yyyy hh:mm tt")</small>
+                </div>
+            }
+            else
+            {
+                <p>No bids were placed.</p>
+            }
+    
+
+        }
+
+       
+
+        <!-- Display bidding form (only if auction is active) -->
+        @if (Model.Item.AuctionEvent.IsActive)
+        {
+            <form method="post">
+                <div class="form-group">
+                    <label asp-for="BidAmount" class="control-label"></label>
+                    <input asp-for="BidAmount" class="form-control" />
+                    <span asp-validation-for="BidAmount" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Place Bid</button>
+            </form>
+
+            <!-- Button for seller to end the auction -->
+            @if (User.IsInRole("Seller") && Model.Item.SellerId == Model.Seller?.Id)
+            {
+                <form method="post" asp-page-handler="EndAuction">
+                    <input type="hidden" name="id" value="@Model.Item.Id" />
+                    <button type="submit" class="btn btn-danger">End Auction</button>
+                </form>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                Bidding is closed. Auction @(Model.Item.AuctionEvent.Status.ToString().ToLower()).
+            </div>
+        }
+
+
+    </div>
+</div>
+</div>
+
+<h3 class="text-center">Bid History</h3>
+<div class="product-page">
+    <!-- Bid History -->
+    @if (Model.Item.Bids != null && Model.Item.Bids.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Bidder</th>
+                    <th>Amount</th>
+                    <th>Bid Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bid in Model.Item.Bids.OrderByDescending(b => b.Amount))
+                {
+                    <tr>
+                        <td>@bid.Buyer?.UserName</td>
+                        <td>@bid.Amount?.ToString("C")</td>
+                        <td>@bid.BidTime.ToString("g")</td>
+                        <td>
+                            @if (bid.BuyerId == UserManager.GetUserId(User))
+                            {
+                                @if (Model.Item.AuctionEvent.Status == AuctionEvent.AuctionEventStatus.Active)
+                                {
+                                    <form method="post" asp-page-handler="RemoveBid">
+                                        <input type="hidden" name="bidId" value="@bid.Id" />
+                                        <button type="submit" class="btn btn-danger">Remove</button>
+                                    </form>
+                                }
+                            }
+                            else
+                            {
+                                <span>Not your bid</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No bids have been placed yet.</p>
+    }
+
+
+</div>
+
+
+@if (Model.Item.AuctionEvent.Status == AuctionEvent.AuctionEventStatus.Completed && Model.IsWinner && !Model.HasFeedback)
+{
+    <div class="alert alert-success mt-4">
+        <h5>Congratulations! You won this auction!</h5>
+        <p>Please share your experience with the seller.</p>
+        <a asp-page="./Feedback/Create"
+           asp-route-itemId="@Model.Item.Id"
+           class="btn btn-primary">
+            <i class="bi bi-star-fill"></i> Leave Feedback
+        </a>
+    </div>
+
+}

@@ -20,11 +20,16 @@ builder.Services.AddIdentity<AppUser, IdentityRole>( options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<RatingService>();
+builder.Services.AddScoped<FeedbackService>();
+builder.Services.AddScoped<WatchlistService>();
+builder.Services.AddScoped<PurchaseService>();
+builder.Services.AddHostedService<AuctionStatusService>();
+// Add EmailSender service
+builder.Services.AddTransient<EmailSender>();
 
-
-//// Register EmailSender as IEmailSender
-//builder.Services.AddSingleton<IEmailSender, EmailSender>();
-
+// Configure SMTP settings
+builder.Services.AddSingleton<EmailSender>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

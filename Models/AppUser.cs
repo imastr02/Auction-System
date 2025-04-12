@@ -18,6 +18,10 @@ namespace Auction_System.Models
 		public virtual ICollection<Rating>? RatingsGiven { get; set; } = new List<Rating>(); // Rating given as a buyer
 		public virtual ICollection<Rating>? Ratings { get; set; } = new List<Rating>();
 		public virtual ICollection<WatchList>? WatchLists { get; set; } = new List<WatchList>(); //Item user is watching
+
+		public ICollection<AuctionEvent> AuctionEvents { get; set; } = new List<AuctionEvent>();
+																								 // Navigation properties for messages
 		
+
 	}
 }

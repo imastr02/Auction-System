@@ -3,8 +3,11 @@
 	public class WatchList
 	{
 		public int Id { get; set; }
-		public string? UserId { get; set; } // User who added item to the watchlist
-		public AppUser? User { get; set; } // Navigation Property
+		//public string? UserId { get; set; } // User who added item to the watchlist
+		//public AppUser? User { get; set; } // Navigation Property 
+
+		public string? BuyerId { get; set; }
+		public AppUser? Buyer { get; set; }
 
 		public int ItemId { get; set; } // Item being watched
 		public Item? Item { get; set; }

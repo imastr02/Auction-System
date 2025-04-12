@@ -1,12 +1,65 @@
-﻿@page
+﻿ @page
+@using Microsoft.AspNetCore.Identity;
+@using Auction_System.Models;
+
 @model IndexModel
+
+@inject SignInManager<AppUser> SignInManager;
+@inject UserManager<AppUser> UserManager;
+
 @{
     ViewData["Title"] = "Home page";
 }
-
+@* 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+ *@
+
+@if (SignInManager.IsSignedIn(User)) {
+    <a class="" asp-page="/Buyer/ViewItems">View Items</a>
+}
 
 
+
+<div class="container mt-3">
+    <h4 class="fw-bold">Top Deals | Shop Now</h4>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        @foreach (var item in Model.Items)
+        {
+            <a asp-page="/Buyer/Details" asp-route-id="@item.Id" class="">
+                <div class="col">
+                    <div class="product-card shadow-sm">
+                        @*  <!-- Discount Badge -->
+                    @if (item.Discount > 0)
+                    {
+                        <span class="discount-badge">@item.Discount% OFF</span>
+                    } *@
+
+                        <!-- Product Image -->
+                        <div class="product-image">
+                            <img src="@item.ImagePath" class="img-fluid" alt="@item.Title">
+                        </div>
+
+                        <!-- Product Info -->
+                        <div class="product-info p-2">
+                            <p class="product-title">@item.Title</p>
+                            <p class="product-price">Starting Price: KSh @item.StartingPrice.ToString("N0")</p>
+                            @*  @if (item.OldPrice > item.Price)
+                        {
+                            <p class="product-old-price">KSh @item.OldPrice.ToString("N0")</p>
+                        } *@
+                        </div>
+
+                        @*  <!-- Hover Add to Watchlist -->
+                    <div class="watchlist-overlay">
+                        <button class="btn btn-warning btn-sm">+ Watchlist</button>
+                    </div> *@
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+</div>

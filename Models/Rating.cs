@@ -14,7 +14,7 @@ namespace Auction_System.Models
 		public string? Comment { get; set; }
 
 		[Required]
-		public DateTime RatingTime {  get; set; }
+		public DateTime RatingTime { get; set; } = DateTime.Now;
 
 		public string? SellerId { get; set; } // User being rated 
 		public virtual AppUser? Seller { get; set; }

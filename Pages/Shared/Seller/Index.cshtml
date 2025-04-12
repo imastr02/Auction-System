@@ -1,16 +1,16 @@
 ﻿@page
 @model Auction_System.Pages.Shared.Seller.IndexModel
 
-@{
+@* @{
     ViewData["Title"] = "Index";
-}
+} *@
 
-<h1>Index</h1>
+
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<table class="table">
+@* <table class="table">
     <thead>
         <tr>
             <th>
@@ -27,9 +27,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Item[0].CreatedAt)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item[0].UpdatedAt)
-            </th>
+          
             <th>
                 @Html.DisplayNameFor(model => model.Item[0].ImagePath)
             </th>
@@ -39,6 +37,10 @@
            
             <th>
                 @Html.DisplayNameFor(model => model.Item[0].AuctionEvent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item[0].AuctionDate)
+
             </th>
             <th>Action</th>
         </tr>
@@ -60,9 +62,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedAt)
-            </td>
+          
             <td>
                 @if (!string.IsNullOrEmpty(item.ImagePath)) 
                 {
@@ -80,6 +80,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.AuctionEvent.Id)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AuctionEvent.AuctionDate.ToString())
+                </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
@@ -89,3 +92,45 @@
 }
     </tbody>
 </table>
+ *@
+
+
+
+<h1>My Items</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Image:</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Starting Price</th>
+            <th>Auction Event</th>
+            <th>Auction Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Item)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>
+                    <img src="@item.ImagePath" alt="No Image" width="100"/>
+                </td>
+                <td>@item.Category?.CategoryName</td>
+                <td>@item.Description</td>
+                <td>@item.StartingPrice.ToString("C")</td>
+                <td>@item.AuctionEvent?.Name</td>
+               @*  <td>@item.AuctionEvent?.AuctionDate?.ToShortDateString()</td> *@
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -110,52 +110,65 @@ namespace Auction_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndingTime")
+                    b.Property<DateTime>("AuctionDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SellerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("AuctionEvents");
+                });
+
+            modelBuilder.Entity("Auction_System.Models.Auction_System.Models.Purchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ItemId1")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartingTime")
+                    b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("PurchasePrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId1");
+                    b.HasIndex("BuyerId");
 
-                    b.ToTable("AuctionEvents");
+                    b.HasIndex("ItemId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EndingTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ItemId = 0,
-                            Name = "9 AM - 10 AM",
-                            StartingTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EndingTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ItemId = 0,
-                            Name = "12 PM - 1 PM",
-                            StartingTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            EndingTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ItemId = 0,
-                            Name = "3 PM - 4 PM",
-                            StartingTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
+                    b.ToTable("Purchases");
                 });
 
             modelBuilder.Entity("Auction_System.Models.Bid", b =>
@@ -220,6 +233,44 @@ namespace Auction_System.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Auction_System.Models.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("FeedbackDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SellerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("Feedbacks");
+                });
+
             modelBuilder.Entity("Auction_System.Models.Item", b =>
                 {
                     b.Property<int>("Id")
@@ -227,6 +278,9 @@ namespace Auction_System.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("AuctionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("AuctionEventId")
                         .HasColumnType("int");
@@ -246,19 +300,25 @@ namespace Auction_System.Migrations
                     b.Property<decimal?>("EndingPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("EndingTime")
+                    b.Property<DateTime>("EndingTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSold")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("SoldPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("StartingPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("StartingTime")
+                    b.Property<DateTime>("StartingTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
@@ -266,6 +326,9 @@ namespace Auction_System.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("WinnerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -275,7 +338,41 @@ namespace Auction_System.Migrations
 
                     b.HasIndex("SellerId");
 
+                    b.HasIndex("WinnerId");
+
                     b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("Auction_System.Models.ItemFeedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Feedback")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("FeedbackDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ItemFeedbacks");
                 });
 
             modelBuilder.Entity("Auction_System.Models.Rating", b =>
@@ -332,17 +429,17 @@ namespace Auction_System.Migrations
                     b.Property<DateTime>("AddedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("BuyerId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ItemId");
 
                     b.ToTable("WatchLists");
                 });
@@ -482,9 +579,29 @@ namespace Auction_System.Migrations
 
             modelBuilder.Entity("Auction_System.Models.AuctionEvent", b =>
                 {
+                    b.HasOne("Auction_System.Models.AppUser", "Seller")
+                        .WithMany("AuctionEvents")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("Auction_System.Models.Auction_System.Models.Purchase", b =>
+                {
+                    b.HasOne("Auction_System.Models.AppUser", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Auction_System.Models.Item", "Item")
                         .WithMany()
-                        .HasForeignKey("ItemId1");
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
 
                     b.Navigation("Item");
                 });
@@ -507,6 +624,29 @@ namespace Auction_System.Migrations
                     b.Navigation("Item");
                 });
 
+            modelBuilder.Entity("Auction_System.Models.Feedback", b =>
+                {
+                    b.HasOne("Auction_System.Models.AppUser", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId");
+
+                    b.HasOne("Auction_System.Models.Item", "Item")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Auction_System.Models.AppUser", "Seller")
+                        .WithMany()
+                        .HasForeignKey("SellerId");
+
+                    b.Navigation("Buyer");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Seller");
+                });
+
             modelBuilder.Entity("Auction_System.Models.Item", b =>
                 {
                     b.HasOne("Auction_System.Models.AuctionEvent", "AuctionEvent")
@@ -526,11 +666,36 @@ namespace Auction_System.Migrations
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("Auction_System.Models.AppUser", "Winner")
+                        .WithMany()
+                        .HasForeignKey("WinnerId");
+
                     b.Navigation("AuctionEvent");
 
                     b.Navigation("Category");
 
                     b.Navigation("Seller");
+
+                    b.Navigation("Winner");
+                });
+
+            modelBuilder.Entity("Auction_System.Models.ItemFeedback", b =>
+                {
+                    b.HasOne("Auction_System.Models.AppUser", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Auction_System.Models.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("Auction_System.Models.Rating", b =>
@@ -564,20 +729,20 @@ namespace Auction_System.Migrations
 
             modelBuilder.Entity("Auction_System.Models.WatchList", b =>
                 {
+                    b.HasOne("Auction_System.Models.AppUser", "Buyer")
+                        .WithMany("WatchLists")
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Auction_System.Models.Item", "Item")
                         .WithMany("WatchLists")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Auction_System.Models.AppUser", "User")
-                        .WithMany("WatchLists")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.Navigation("Buyer");
 
                     b.Navigation("Item");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -633,6 +798,8 @@ namespace Auction_System.Migrations
 
             modelBuilder.Entity("Auction_System.Models.AppUser", b =>
                 {
+                    b.Navigation("AuctionEvents");
+
                     b.Navigation("Bids");
 
                     b.Navigation("Items");
@@ -659,6 +826,8 @@ namespace Auction_System.Migrations
             modelBuilder.Entity("Auction_System.Models.Item", b =>
                 {
                     b.Navigation("Bids");
+
+                    b.Navigation("Feedbacks");
 
                     b.Navigation("Ratings");
 

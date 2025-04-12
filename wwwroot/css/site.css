@@ -20,3 +20,102 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Seller rating stars */
+.text-warning {
+    color: #ffc107 !important;
+}
+
+/* Sold items list */
+.list-group-item {
+    transition: all 0.3s;
+}
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+
+/* Feedback cards */
+.feedback-card {
+    border-left: 4px solid #ffc107;
+}
+
+/* Item cards */
+.sold-item-card {
+    transition: transform 0.2s;
+    border-left: 4px solid var(--bs-primary);
+}
+
+    .sold-item-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+/* Image container */
+.img-container {
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+/* Winning price highlight */
+.winning-price {
+    font-size: 1.1rem;
+    color: var(--bs-success);
+}
+
+/* Feedback cards */
+.feedback-card {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+/* Winning bid styling */
+.winning-price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Trophy icon */
+.bi-trophy-fill {
+    color: #ffc107;
+}
+
+/* Sold item card */
+.sold-item-card {
+    border-left: 3px solid #28a745;
+    transition: all 0.3s ease;
+}
+
+    .sold-item-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
+/* Image container */
+.img-container {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: #f8f9fa;
+}
+
+    .img-container img {
+        max-height: 100%;
+        width: auto;
+        object-fit: contain;
+    }
+
+

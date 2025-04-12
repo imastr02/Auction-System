@@ -1,18 +1,15 @@
 ﻿@page
 @model Auction_System.Pages.Shared.Seller.CreateModel
 
-@{
-    ViewData["Title"] = "Create";
-}
 
-<h1>Create</h1>
 
-<h4>Item</h4>
+
+<h4> Create Item</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Item.Title" class="control-label"></label>
                 <input asp-for="Item.Title" class="form-control" />
@@ -29,16 +26,6 @@
                 <span asp-validation-for="Item.StartingPrice" class="text-danger"></span>
             </div>
           
-            <div class="form-group">
-                <label asp-for="Item.StartingTime" class="control-label"></label>
-                <input asp-for="Item.StartingTime" class="form-control" />
-                <span asp-validation-for="Item.StartingTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Item.EndingTime" class="control-label"></label>
-                <input asp-for="Item.EndingTime" class="form-control" />
-                <span asp-validation-for="Item.EndingTime" class="text-danger"></span>
-            </div>
     
             <div class="form-group">
                 <label asp-for="Item.ImagePath" class="control-label"></label>
@@ -51,16 +38,29 @@
                     <option value="">-- Select a Category --</option>
                 </select>
             </div>
-           @*  <div class="form-group">
-                <label asp-for="Item.SellerId" class="control-label"></label>
-                <select asp-for="Item.SellerId" class ="form-control" asp-items="ViewBag.SellerId"></select>
-            </div> *@
+
             <div class="form-group">
-                <label asp-for="Item.AuctionEventId">Auction Event</label>
-                <select asp-for="Item.AuctionEventId" asp-items="Model.AuctionEvents" class="form-control">
-                    <option value="">-- Select an Auction Event --</option>
-                </select>
+                <label asp-for="Item.StartingTime" class="control-label"></label>
+                <input asp-for="Item.StartingTime" type="datetime-local" class="form-control" type="time" />
+                <span asp-validation-for="Item.StartingTime" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Item.EndingTime" class="control-label"></label>
+                <input asp-for="Item.EndingTime" type="datetime-local" class="form-control" type="time" />
+                <span asp-validation-for="Item.EndingTime" class="text-danger"></span>
+            </div>
+         
+
+            <div class="form-group">
+                <label asp-for="Item.AuctionDate" class="control-label"></label>
+                <input asp-for="Item.AuctionDate" class="form-control" type="date" />
+                <span asp-validation-for="Item.AuctionDate" class="text-danger"></span>
+            </div>
+    
+
+          
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

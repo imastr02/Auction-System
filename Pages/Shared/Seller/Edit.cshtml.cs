@@ -26,7 +26,8 @@ namespace Auction_System.Pages.Shared.Seller
 		public List<SelectListItem> AuctionEvents { get; set; }
 		public List<SelectListItem> Categories { get; set; }
 
-      public IFormFile ImageFile { get; set; }
+        [BindProperty]
+        public IFormFile ImageFile { get; set; }
 
 		[BindProperty]
         public Item Item { get; set; } = default!;
@@ -40,13 +41,19 @@ namespace Auction_System.Pages.Shared.Seller
                 return NotFound();
             }
 
-            var item =  await _context.Items.FirstOrDefaultAsync(m => m.Id == id);
+            var item =  await _context.Items
+                .Include(i => i.Category)
+                .Include(i => i.AuctionEvent)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (item == null)
             {
                 return NotFound();
             }
+
             Item = item;
-			// Fetch auction events from the database
+
+			// Fetch auction events from the database, Populate dropdowns
 			AuctionEvents = await _context.AuctionEvents
 				.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Name })
 				.ToListAsync();
@@ -55,6 +62,7 @@ namespace Auction_System.Pages.Shared.Seller
 			Categories = await _context.Categories
 				.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.CategoryName })
 				.ToListAsync();
+
 			return Page();
 		}
 
@@ -64,18 +72,50 @@ namespace Auction_System.Pages.Shared.Seller
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+				//Repopulate dropdowns and existing data
+				AuctionEvents = await _context.AuctionEvents
+				.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Name })
+				.ToListAsync();
+
+				Categories = await _context.Categories
+			   .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.CategoryName })
+			   .ToListAsync();
+
+				return Page();
             }
 
+			var existingItem = await _context.Items
+	      .AsNoTracking() // Ensure the existing item is not tracked
+	      .FirstOrDefaultAsync(i => i.Id == Item.Id);
 
+			if (existingItem == null)
+            {
+                return NotFound();
+            }
 
+            //check if any changes were made
+            bool hasChanges = existingItem.Title != Item.Title || existingItem.Description != Item.Description || existingItem.StartingPrice != Item.StartingPrice || existingItem.CategoryId != Item.CategoryId || existingItem.AuctionEventId != Item.AuctionEventId || (ImageFile != null && ImageFile.Length > 0);
 
+            if (!hasChanges)
+            {
+				//No changes were made, redirect to the list page
+				return RedirectToPage("./Index");
+			}
+
+            //update only the necessary properties
+            existingItem.Title = Item.Title;
+            existingItem.Description = Item.Description;
+            existingItem.StartingPrice = Item.StartingPrice;
+            existingItem.CategoryId = Item.CategoryId;
+            existingItem.AuctionEventId = Item.AuctionEventId;
+
+            //Handle Image upload
             if (ImageFile != null && ImageFile.Length > 0)
             {
                 // Delete the old image if it exists
-                if (!string.IsNullOrEmpty(Item.ImagePath))
+                if (!string.IsNullOrEmpty(existingItem.ImagePath))
                 {
-                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, Item.ImagePath.TrimStart('/'));
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, existingItem.ImagePath.TrimStart('/'));
                     if (System.IO.File.Exists(oldImagePath))
                     {
                         System.IO.File.Delete(oldImagePath);
@@ -98,17 +138,19 @@ namespace Auction_System.Pages.Shared.Seller
                 }
 
                 // Update the image path in the database
-                Item.ImagePath = $"/images/{uniqueFileName}";
+                existingItem.ImagePath = $"/images/{uniqueFileName}";
 
             }
-            else
-            {
-                //// Retain the existing image path if no new image is uploaded
-                Item.ImagePath = Item.ImagePath;
-            }
+			else
+			{
+				// Retain the existing image path if no new image is uploaded
+				existingItem.ImagePath = existingItem.ImagePath;
+			}
 
-            _context.Attach(Item).State = EntityState.Modified;
-            _context.Entry(Item).Property(x => x.CreatedAt).IsModified = false;
+			//Attach eexisting item and mark it as modified
+			_context.Attach(existingItem).State = EntityState.Modified;
+           // _context.Attach(Item).State = EntityState.Modified;
+            //_context.Entry(Item).Property(x => x.CreatedAt).IsModified = false;
 
 
             {

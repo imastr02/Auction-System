@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Auction_System.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Auction_System.Models.Auction_System.Models;
+using DocumentFormat.OpenXml.Vml.Office;
+using Humanizer;
 
 namespace Auction_System.Services
 {
@@ -18,17 +21,18 @@ namespace Auction_System.Services
 		public DbSet<Bid> Bids { get; set; }
 		public DbSet<Rating> Ratings { get; set; }
 		public DbSet<AuctionEvent> AuctionEvents { get; set; }
+		public DbSet<ItemFeedback> ItemFeedbacks {  get; set; }
+		public DbSet<Feedback> Feedbacks { get; set; }
+		public DbSet<Purchase> Purchases { get; set; }
+		
+
+
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
 
-			// Seed Auction Events
-			modelBuilder.Entity<AuctionEvent>().HasData(
-				new AuctionEvent { Id = 1, Name = "9 AM - 10 AM" },
-				new AuctionEvent { Id = 2, Name = "12 PM - 1 PM" },
-				new AuctionEvent { Id = 3, Name = "3 PM - 4 PM" }
-			);
+		
 
 			// Seed Categories
 			modelBuilder.Entity<Category>().HasData(
@@ -57,9 +61,9 @@ namespace Auction_System.Services
 				.HasForeignKey(i => i.AuctionEventId);
 
 			modelBuilder.Entity<WatchList>()
-				.HasOne(w => w.User)
+				.HasOne(w => w.Buyer)
 				.WithMany(u => u.WatchLists)
-				.HasForeignKey(w => w.UserId)
+				.HasForeignKey(w => w.BuyerId)
 				.HasPrincipalKey(u => u.Id)
 				 .OnDelete(DeleteBehavior.NoAction); ;
 
@@ -99,6 +103,23 @@ namespace Auction_System.Services
 				.WithMany(i => i.Ratings)
 				.HasForeignKey(r => r.ItemId)
 				.OnDelete(DeleteBehavior.Restrict);
-		}
+
+			// AuctionEvent to Items (One-to-Many)
+			modelBuilder.Entity<AuctionEvent>()
+				.HasMany(ae => ae.Items)
+				.WithOne(i => i.AuctionEvent)
+				.HasForeignKey(i => i.AuctionEventId)
+				.OnDelete(DeleteBehavior.Cascade); // Cascade delete items when auction is deleted
+
+			// AuctionEvent to Seller(AppUser) (Many - to - One)
+
+		modelBuilder.Entity<AuctionEvent>()
+			.HasOne(ae => ae.Seller)
+			.WithMany(u => u.AuctionEvents)
+			.HasForeignKey(ae => ae.SellerId)
+			.OnDelete(DeleteBehavior.Restrict); // Prevent seller deletion if auctions exist
+
+
+			}
 	}
 }

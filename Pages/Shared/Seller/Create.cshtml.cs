@@ -9,6 +9,7 @@ using Auction_System.Models;
 using Auction_System.Services;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Auction_System.Pages.Shared.Seller
 {
@@ -16,34 +17,39 @@ namespace Auction_System.Pages.Shared.Seller
     {
         private readonly Auction_System.Services.ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+		private readonly UserManager<AppUser> _userManager;
 
-        public CreateModel(Auction_System.Services.ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public CreateModel(Auction_System.Services.ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
+			_webHostEnvironment = webHostEnvironment;
+			_userManager = userManager;
         }
 
 
-		public List<SelectListItem> AuctionEvents { get; set; }
+		[BindProperty]
+		//public int SelectedAuctionEventId {  get; set; }
+		//public List<SelectListItem> AuctionEvents { get; set; } = new List<SelectListItem>();
+		public AuctionEvent AuctionEvent { get; set; }
+		
 		public List<SelectListItem> Categories { get; set; }
-        //public ItemDto ItemDto { get; set; } = new ItemDto();
+    
 
         [BindProperty]
         public IFormFile? ImageFile { get; set; }
 
 
-		public async Task<IActionResult> OnGet()
+		public async Task OnGetAsync()
         {
-			// Fetch auction events from the database
-			AuctionEvents = await _context.AuctionEvents
-				.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Name })
-				.ToListAsync();
+	
 
 			// Fetch categories from the database
 			Categories = await _context.Categories
 				.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.CategoryName })
 				.ToListAsync();
-			return Page();
+			
+
+			//return Page();
         }
 
         [BindProperty]
@@ -52,24 +58,38 @@ namespace Auction_System.Pages.Shared.Seller
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+			if (!ModelState.IsValid)
+			{
+				// Log validation errors
+				foreach (var modelState in ModelState.Values)
+				{
+					foreach (var error in modelState.Errors)
+					{
+						Console.WriteLine($"Validation error: {error.ErrorMessage}");
+					}
+				}
+
+				// Repopulate dropdowns to avoid rendering issues
+				Categories = await _context.Categories
+					.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.CategoryName })
+					.ToListAsync();
+
+				return Page();
+			}
 
 
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+			// Get the current user (seller)
+			var seller = await _userManager.GetUserAsync(User);
+			if (seller == null)
+			{
+				return RedirectToPage("/Account/Login");
+			}
 
-			////save image file
-			//string newFileName = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-			//newFileName += Path.GetExtension(ItemDto.ImageFile!.FileName);
+			Item.SellerId = seller.Id; // Set the SellerId
+									   //Item.Seller = seller;		
 
-			//string imageFullPath = _webHostEnvironment.WebRootPath +"/images/" + newFileName;
-			//using (var stream = System.IO.File.Create(imageFullPath))
-			//{
-			//    ItemDto.ImageFile.CopyTo(stream);
-			//}
-
-			//Item.ImagePath = newFileName; 
+			// Print ModelState errors for debugging
+		
 
 			if (ImageFile != null)
 			{
@@ -97,12 +117,31 @@ namespace Auction_System.Pages.Shared.Seller
 			}
 
 				Item.CreatedAt = DateTime.Now;
-           
-           
-            _context.Items.Add(Item);
-            await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+			var auctionEvent = new AuctionEvent
+			{
+				Name = Item.Title,
+				StartTime = (DateTime)Item.StartingTime!,
+				EndTime = (DateTime)Item.EndingTime!,
+				AuctionDate = Item.AuctionDate,
+				SellerId = seller.Id,
+
+			};
+
+
+			_context.AuctionEvents.Add(auctionEvent);
+			await _context.SaveChangesAsync(); // Save to get the ID
+
+			// Now set the AuctionEventId on the Item
+			Item.AuctionEventId = auctionEvent.Id;
+
+			// Add and save the Item
+			_context.Items.Add(Item);
+			await _context.SaveChangesAsync();
+
+			return RedirectToPage("./Index");
         }
+
+
     }
 }

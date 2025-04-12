@@ -1,0 +1,75 @@
+﻿/* Grid Styling */
+.product-card {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+
+    .product-card:hover {
+        transform: scale(1.05);
+    }
+
+/* Discount Badge */
+.discount-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: orange;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+
+/* Image Styling */
+.product-image {
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+    .product-image img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+/* Product Info */
+.product-info {
+    text-align: center;
+}
+
+.product-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.product-price {
+    color: #f68b1e;
+    font-weight: bold;
+}
+
+.product-old-price {
+    font-size: 12px;
+    text-decoration: line-through;
+    color: gray;
+}
+
+/* Watchlist Button (Appears on Hover) */
+/*.watchlist-overlay {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    display: none;
+}
+
+.product-card:hover .watchlist-overlay {
+    display: block;
+}*/

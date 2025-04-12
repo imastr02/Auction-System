@@ -1,0 +1,172 @@
+﻿@page
+@model Auction_System.Pages.Buyer.DetailsModel
+@using Microsoft.AspNetCore.Identity
+@using Auction_System.Models
+@inject UserManager<AppUser> UserManager
+
+
+<head>
+    <link rel="stylesheet" href="~/css/styles.css"/>
+    <style>
+        .auction-time {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+            .auction-time h4 {
+                color: #333;
+                margin-bottom: 15px;
+            }
+
+            .auction-time strong {
+                color: #666;
+            }
+    </style>
+</head>
+
+<div class="product-page">
+    <!-- Left Section: Image Gallery -->
+    <div class="image-section">
+       @*  <div class="thumbnail-list">
+            @if (Model.Item?.ImageUrls != null)
+            {
+                @foreach (var imageUrl in Model.Item.ImageUrls.Split(','))
+                {
+                    <img src="@imageUrl" class="thumbnail" onclick="changeImage('@imageUrl')" alt="Thumbnail">
+                }
+            }
+        </div> *@
+        <div class="main-image">
+            <img id="displayed-image" src="@(Model.Item?.ImagePath?.Split(',')[0] ?? "/images/default.jpg")" alt="Main Product Image">
+            @* <div class="watch-label">5 WATCHED IN THE LAST 24 HOURS</div> *@
+        </div>
+    </div>
+
+    <!-- Right Section: Product Details -->
+    <div class="details-section">
+        <h2>@Model.Item?.Title</h2>
+
+        <div class="seller-info">
+            <a class="seller-name" asp-page="/Shared/Seller/SellerRatings" asp-route-Id="@Model.Item?.SellerId">@(Model.Seller?.UserName ?? "Unknown Seller")</a>
+            <span class="rating">⭐ 99.8% positive</span>
+            <a href="#" class="seller-link">Seller’s other items</a> | <a href="#" class="contact-link">Contact Seller</a>
+        </div>
+
+        <h3>Starting Price: @Model.Item?.StartingPrice.ToString("C")</h3>
+
+
+
+        <div class="auction-time">
+            <h4>Auction Schedule</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>Start Time:</strong>
+                    @if (Model.Item.AuctionEvent != null)
+                    {
+                        <span>@Model.Item.AuctionEvent.StartTime.ToString("MM/dd/yyyy hh:mm tt")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not scheduled</span>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <strong>End Time:</strong>
+                    @if (Model.Item.AuctionEvent != null)
+                    {
+                        <span>@Model.Item.AuctionEvent.EndTime.ToString("MM/dd/yyyy hh:mm tt")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not scheduled</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Item.AuctionEvent.IsActive)
+        {
+            <div class="actions">
+
+                <a class="watchlist" style="padding: 10px" asp-page="/Buyer/BiddingProcess" asp-route-id="@Model.Item?.Id">Bid NOW</a>
+
+
+
+                @if (Model.IsInWatchlist)
+                {
+                    <form method="post" asp-page-handler="RemoveFromWatchlist">
+                        <input type="hidden" name="id" value="@Model.Item?.Id" />
+                        <button type="submit" class="watchlist"><i class="fas fa-heart"></i>Remove from Watchlist</button>
+                    </form>
+                }
+                else
+                {
+                    <form method="post" asp-page-handler="AddToWatchlist">
+                        <input type="hidden" name="id" value="@Model.Item?.Id" />
+                        <button type="submit" class="watchlist"><i class="fas fa-heart"></i>Add to Watchlist</button>
+                    </form>
+                }
+
+            </div>
+            
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                Bidding is closed. Auction @(Model.Item.AuctionEvent.Status.ToString().ToLower()).
+            </div>
+        }
+
+        @if(Model.IsWinner)
+        {
+            <a class="watchlist" style="padding: 10px" asp-page="/Buyer/BiddingProcess" asp-route-id="@Model.Item?.Id">Bid NOW</a>
+
+        }
+        @if (User.IsInRole("Seller") && Model.Item.SellerId == Model.Seller?.Id && Model.Item.AuctionEvent.Status == AuctionEvent.AuctionEventStatus.Completed)
+        {
+            <a class="watchlist" style="padding: 10px" asp-page="/Buyer/BiddingProcess" asp-route-id="@Model.Item?.Id">Bid NOW</a>
+
+        }
+       
+    </div>
+</div>
+
+
+<!-- Display feedback -->
+<h3>Feedback</h3>
+@if (Model?.Item?.Feedbacks != null && Model.Item.Feedbacks.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Buyer</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var feedback in Model.Item.Feedbacks)
+            {
+                <tr>
+                    <td>@feedback.Buyer?.FirstName @feedback.Buyer?.LastName</td>
+                    <td>@feedback.Rating</td>
+                    <td>@feedback.Comment</td>
+                    <td>@feedback.FeedbackDate.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No feedback available.</p>
+}
+
+<script>
+    function changeImage(imageSrc) {
+        document.getElementById("displayed-image").src = imageSrc;
+    }
+</script>
