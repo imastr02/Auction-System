@@ -368,7 +368,7 @@ namespace Auction_System.Pages.Buyer
 					UseDefaultCredentials = false,
 					Credentials = new NetworkCredential(
 						"ahmedabeidahmed2002@gmail.com",
-						"ewlv efbw ddoz qcwn"
+						""
 					),
 					DeliveryMethod = SmtpDeliveryMethod.Network
 				};
