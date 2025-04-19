@@ -43,6 +43,16 @@ namespace Auction_System.Services
 
 
 			// Configure relationships
+			modelBuilder.Entity<AppUser>()
+				.HasMany(u => u.Bids)
+				.WithOne(b => b.Buyer)
+				.HasForeignKey(b => b.BuyerId);
+
+			modelBuilder.Entity<AppUser>()
+				.HasMany(u => u.ItemsWon)
+				.WithOne(i => i.Winner)
+				.HasForeignKey(i => i.WinnerId);
+
 			modelBuilder.Entity<Item>()
 				.HasOne(i => i.Seller)
 				.WithMany(u => u.Items)
@@ -59,6 +69,11 @@ namespace Auction_System.Services
 				.HasOne(i => i.AuctionEvent)
 				.WithMany(e => e.Items)
 				.HasForeignKey(i => i.AuctionEventId);
+
+			modelBuilder.Entity<Item>()
+				   .HasOne(i => i.Winner)
+				   .WithMany(u => u.ItemsWon)
+				   .HasForeignKey(i => i.WinnerId);
 
 			modelBuilder.Entity<WatchList>()
 				.HasOne(w => w.Buyer)

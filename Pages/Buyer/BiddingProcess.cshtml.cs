@@ -243,44 +243,22 @@ namespace Auction_System.Pages.Buyer
 
 				item.WinnerId = winningBid.BuyerId;
 
-				if (winningBid != null)
+				// Get the winner and send email notification
+				var winner = await _userManager.FindByIdAsync(winningBid.BuyerId);
+				if (winner != null)
 				{
-
-					item.WinnerId = winningBid.BuyerId;
-					var winner = await _userManager.FindByIdAsync(winningBid.BuyerId);
-					var name = winner?.UserName;
-					var email = winner?.Email;
-
-					await SendMailAsync(name!, email!, item);
-
+					await SendMailAsync(winner.UserName, winner.Email, item);
 				}
-
-
-
 				//if (winningBid != null)
 				//{
+
 				//	item.WinnerId = winningBid.BuyerId;
+				//	var winner = await _userManager.FindByIdAsync(winningBid.BuyerId);
+				//	var name = winner?.UserName;
+				//	var email = winner?.Email;
 
-				//	// Send email to winner
-				//	try
-				//	{
-				//		var winner = await _userManager.FindByIdAsync(item.WinnerId);
-				//		if (winner != null)
-				//		{
-				//			var subject = "You Won the Auction!";
-				//			var body = $@"
-    //                <h1>Congratulations, {winner.UserName}!</h1>
-    //                <p>You won the auction for <strong>{item.Title}</strong>.</p>
-    //            ";
+				//	await SendMailAsync(name!, email!, item);
 
-				//			await _emailSender.SendEmailAsync(winner.Email, subject, body);
-				//		}
-				//	}
-				//	catch (Exception ex)
-				//	{
-				//		// Log email failure (don't break the flow)
-				//		Console.WriteLine($"Email error: {ex.Message}");
-				//	}
 				//}
 			}
 

@@ -95,6 +95,7 @@
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/grid.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 	<script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
 </head>
 <body>
@@ -117,16 +118,19 @@
 					<!-- Account -->
 					<div class="dropdown me-3">
 						<a class="text-dark text-decoration-none dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
-							<i class="fas fa-user"></i> Account
+							<i class="fas fa-user"></i> Profile
 						</a>
 						<ul class="dropdown-menu">
 							@if (SignInManager.IsSignedIn(User))
 							{
-								<li> <a id="manage" class="nav-link text-dark" asp-area="" asp-page="/User" title="Manage">Profile</a></li>
+								<li> <a id="manage" class="nav-link text-dark" asp-area="" asp-page="/User" title="Manage">My Account</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-page="/Buyer/MyBids">My Bids</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-page="/Buyer/AuctionWon">Auctions Won</a></li>
                                 @if(SignInManager.IsSignedIn(User) && User.IsInRole("Seller")) 
                                 {
                                     <li><a class="nav-link" asp-area="" asp-page="\Shared\Seller\Create">Create Item</a></li>
                                     <li><a class="nav-link text-dark" asp-area="" asp-page="/Shared/Seller/Index">List of Items</a></li>
+                                
                                 }                         
 								<li>
 									<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">

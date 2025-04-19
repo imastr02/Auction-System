@@ -50,13 +50,27 @@
         </dd>
      
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.AuctionEvent)
+            @Html.DisplayNameFor(model => model.Item.StartingTime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.AuctionEvent.Name)
+            @Html.DisplayFor(model => model.Item.StartingTime.TimeOfDay)
+        </dd>
+
+         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.EndingTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.EndingTime.TimeOfDay)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.AuctionDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.AuctionDate)
         </dd>
     </dl>
-</div 
+</div>
 
 
 <div>

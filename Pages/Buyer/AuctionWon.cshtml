@@ -1,0 +1,70 @@
+﻿@page
+@model Auction_System.Pages.Buyer.AuctionWonModel
+@{
+}
+
+
+<div class="container mt-4">
+    <h2 class="mb-4">Your Won Auctions</h2>
+
+    @if (Model.WonItems.Any())
+    {
+        <div class="row">
+            @foreach (var item in Model.WonItems)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow">
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath" class="card-img-top" alt="@item.Title" style="height: 200px; object-fit: cover;">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                @item.Title
+                                <span class="badge bg-success ms-2">Won</span>
+                            </h5>
+
+                            <div class="mb-3">
+                                <h6 class="text-muted">Auction Details:</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Category:</strong> @(item.Category?.CategoryName ?? "N/A")</li>
+                                    <li><strong>Seller:</strong> @item.Seller?.UserName</li>
+                                    <li><strong>Final Price:</strong> @(item.Bids?.Any() == true ? item.Bids.Max(b => b.Amount)?.ToString("C") : item.StartingPrice.ToString("C"))</li>
+                                    <li><strong>Ended:</strong> @item.AuctionEvent?.EndTime.ToString("MMMM dd, yyyy h:mm tt")</li>
+                                </ul>
+                            </div>
+
+                            <div class="mb-3">
+                                <h6 class="text-muted">Item Description:</h6>
+                                <p class="card-text">@(item.Description ?? "No description available")</p>
+                            </div>
+
+                           @*  <div class="d-grid gap-2">
+                                <a asp-page="/Items/Details" asp-route-id="@item.Id" class="btn btn-primary">
+                                    View Item Details
+                                </a>
+                                @if (item.AuctionEvent?.Status == AuctionEvent.AuctionEventStatus.Completed)
+                                {
+                                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#feedbackModal-@item.Id">
+                                        Leave Feedback
+                                    </button>
+                                }
+                            </div> *@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No won auctions yet!</h4>
+            <p>Participate in more auctions to see your wins here.</p>
+            <a asp-page="/Items/Index" class="btn btn-outline-primary">
+                Browse Active Auctions
+            </a>
+        </div>
+    }
+</div>
+</div>

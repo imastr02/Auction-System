@@ -51,12 +51,17 @@
                     <option value="">-- Select a Category --</option>
                 </select>
             </div>
-           
+
             <div class="form-group">
-                <label asp-for="Item.AuctionEventId">Auction Event</label>
-                <select asp-for="Item.AuctionEventId" asp-items="Model.AuctionEvents" class="form-control">
-                    <option value="">-- Select Auction Event --</option>
-                </select>
+                <label asp-for="Item.StartingTime" class="control-label"></label>
+                <input asp-for="Item.StartingTime" type="datetime-local" class="form-control" type="time" />
+                <span asp-validation-for="Item.StartingTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Item.EndingTime" class="control-label"></label>
+                <input asp-for="Item.EndingTime" type="datetime-local" class="form-control" type="time" />
+                <span asp-validation-for="Item.EndingTime" class="text-danger"></span>
             </div>
             
             <div class="form-group">

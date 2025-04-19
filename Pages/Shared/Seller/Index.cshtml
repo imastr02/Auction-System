@@ -106,7 +106,8 @@
             <th>Category</th>
             <th>Description</th>
             <th>Starting Price</th>
-            <th>Auction Event</th>
+            <th>Starting Time</th>
+            <th>Ending Time</th>
             <th>Auction Date</th>
             <th>Actions</th>
         </tr>
@@ -122,7 +123,9 @@
                 <td>@item.Category?.CategoryName</td>
                 <td>@item.Description</td>
                 <td>@item.StartingPrice.ToString("C")</td>
-                <td>@item.AuctionEvent?.Name</td>
+                <td>@item.StartingTime.ToShortTimeString()</td>
+                <td>@item.EndingTime.ToShortTimeString()</td>
+                <td>@item.AuctionDate.ToShortDateString()</td>
                @*  <td>@item.AuctionEvent?.AuctionDate?.ToShortDateString()</td> *@
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |

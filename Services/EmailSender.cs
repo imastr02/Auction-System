@@ -1,10 +1,11 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace Auction_System.Services
 {
-	public class EmailSender
+	public class EmailSender : IEmailSender
 	{
 		private readonly IConfiguration _config;
 

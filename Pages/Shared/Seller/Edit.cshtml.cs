@@ -23,10 +23,11 @@ namespace Auction_System.Pages.Shared.Seller
             _webHostEnvironment = webHostEnvironment;
         }
 
-		public List<SelectListItem> AuctionEvents { get; set; }
+		//public List<SelectListItem> AuctionEvents { get; set; }
 		public List<SelectListItem> Categories { get; set; }
+		public AuctionEvent AuctionEvent { get; set; }
 
-        [BindProperty]
+		[BindProperty]
         public IFormFile ImageFile { get; set; }
 
 		[BindProperty]
@@ -53,10 +54,7 @@ namespace Auction_System.Pages.Shared.Seller
 
             Item = item;
 
-			// Fetch auction events from the database, Populate dropdowns
-			AuctionEvents = await _context.AuctionEvents
-				.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Name })
-				.ToListAsync();
+			
 
 			// Fetch categories from the database
 			Categories = await _context.Categories
@@ -72,10 +70,10 @@ namespace Auction_System.Pages.Shared.Seller
         {
             if (!ModelState.IsValid)
             {
-				//Repopulate dropdowns and existing data
-				AuctionEvents = await _context.AuctionEvents
-				.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Name })
-				.ToListAsync();
+				////Repopulate dropdowns and existing data
+				//AuctionEvents = await _context.AuctionEvents
+				//.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Name })
+				//.ToListAsync();
 
 				Categories = await _context.Categories
 			   .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.CategoryName })
@@ -94,7 +92,7 @@ namespace Auction_System.Pages.Shared.Seller
             }
 
             //check if any changes were made
-            bool hasChanges = existingItem.Title != Item.Title || existingItem.Description != Item.Description || existingItem.StartingPrice != Item.StartingPrice || existingItem.CategoryId != Item.CategoryId || existingItem.AuctionEventId != Item.AuctionEventId || (ImageFile != null && ImageFile.Length > 0);
+            bool hasChanges = existingItem.Title != Item.Title || existingItem.Description != Item.Description || existingItem.StartingPrice != Item.StartingPrice || existingItem.CategoryId != Item.CategoryId || existingItem.StartingTime != Item.StartingTime || existingItem.EndingTime != Item.EndingTime || (ImageFile != null && ImageFile.Length > 0);
 
             if (!hasChanges)
             {
@@ -107,10 +105,11 @@ namespace Auction_System.Pages.Shared.Seller
             existingItem.Description = Item.Description;
             existingItem.StartingPrice = Item.StartingPrice;
             existingItem.CategoryId = Item.CategoryId;
-            existingItem.AuctionEventId = Item.AuctionEventId;
+            existingItem.StartingTime = Item.StartingTime;
+            existingItem.EndingTime = Item.EndingTime;
 
-            //Handle Image upload
-            if (ImageFile != null && ImageFile.Length > 0)
+			//Handle Image upload
+			if (ImageFile != null && ImageFile.Length > 0)
             {
                 // Delete the old image if it exists
                 if (!string.IsNullOrEmpty(existingItem.ImagePath))

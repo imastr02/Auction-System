@@ -24,24 +24,7 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Item.Description)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.StartingPrice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.StartingPrice)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.EndingPrice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.EndingPrice)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.CurrentPrice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.CurrentPrice)
-        </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Item.StartingTime)
         </dt>
@@ -54,42 +37,15 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Item.EndingTime)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.CreatedAt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.CreatedAt)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.UpdatedAt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.UpdatedAt)
-        </dd>
+      
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Item.ImagePath)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.ImagePath)
+            @*   @Html.DisplayFor(model => model.Item.ImagePath) *@
+            <img src="@Url.Content(Model.Item.ImagePath)" alt="No Image" class="img-fluid" width="100" />
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.Category)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.Category.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.Seller)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.Seller.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.AuctionEvent)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.AuctionEvent.Id)
-        </dd>
+     
     </dl>
     
     <form method="post">
