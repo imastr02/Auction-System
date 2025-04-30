@@ -1,0 +1,30 @@
+﻿@model Item
+<dl class="row">
+    <dt class="col-sm-3">Item:</dt>
+    <dd class="col-sm-9">@Model.Title</dd>
+    <dt class="col-sm-3">Description:</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+    <dt class="col-sm-3">Category:</dt>
+    <dd class="col-sm-9">@(Model.Category?.CategoryName ?? "Not categorized")</dd>
+    <dt class="col-sm-3">Seller:</dt>
+    <dd class="col-sm-9">@(Model.Seller?.UserName ?? "Unknown")</dd>
+    <dt class="col-sm-3">Final Price:</dt>
+    <dd class="col-sm-9">
+        @(Model.Bids != null && Model.Bids.Any()
+            ? Model.Bids.Max(b => b.Amount)?.ToString("C")
+            : "No bids")
+    </dd>
+    <dt class="col-sm-3">Auction Ended:</dt>
+    <dd class="col-sm-9">
+        @(Model.AuctionEvent?.EndTime.ToString("f") ?? "Not specified")
+    </dd>
+</dl>
+@if (!string.IsNullOrEmpty(Model.ImagePath))
+{
+    <div class="text-center mt-3">
+        <img src="@Model.ImagePath"
+             class="img-fluid rounded"
+             alt="@Model.Title"
+             style="max-height: 300px;">
+    </div>
+}

@@ -24,9 +24,8 @@ namespace Auction_System.Services
 		public DbSet<ItemFeedback> ItemFeedbacks {  get; set; }
 		public DbSet<Feedback> Feedbacks { get; set; }
 		public DbSet<Purchase> Purchases { get; set; }
-		
-
-
+		//public DbSet<ChatMessage> ChatMessages { get; set; }
+		public DbSet<Notification> Notifications { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

@@ -1,0 +1,90 @@
+﻿ @page
+@model Auction_System.Pages.Buyer.InboxModel
+@{
+}
+
+
+
+
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Notifications List -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Your Notifications</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    @foreach (var notification in Model.Notifications)
+                    {
+                        <a asp-page="./Inbox" 
+                           asp-route-itemId="@notification.ItemId"
+                           class="list-group-item list-group-item-action 
+                                  @(!notification.IsRead ? "fw-bold bg-light" : "")">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">@notification.Item.Title</h6>
+                                    <small class="text-muted">@notification.CreatedAt.ToString("g")</small>
+                                    <div class="mt-1 small">
+                                        @switch (notification.Type)
+                                        {
+                                            case NotificationType.AuctionWon:
+                                                <span class="badge bg-success">Auction Won</span>
+                                                break;
+                                            case NotificationType.AuctionEnded:
+                                                <span class="badge bg-info">Auction Ended</span>
+                                                break;
+                                        }
+                                    </div>
+                                </div>
+                                @if (!notification.IsRead)
+                                {
+                                    <span class="badge bg-danger">New</span>
+                                }
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Details -->
+        <div class="col-md-8 mt-4 mt-md-0">
+            @if (Model.SelectedItem != null)
+            {
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">@Model.SelectedItem.Title Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <partial name="_ItemDetails" model="Model.SelectedItem" />
+                        
+                        @if (Model.Notifications.FirstOrDefault(n => n.ItemId == Model.SelectedItem.Id)?.Type == NotificationType.AuctionWon)
+                        {
+                            <div class="mt-4 alert alert-success">
+                                <h5>Payment Instructions</h5>
+                                <p class="mb-1">Amount: @Model.SelectedItem.Bids.Max(b => b.Amount)?.ToString("C")</p>
+                                <p class="mb-1">Seller Contact: @Model.SelectedItem.Seller.Email</p>
+                                <p class="mb-0">Payment Due: @DateTime.Now.AddDays(3).ToString("d")</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Select a notification to view details</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div> 

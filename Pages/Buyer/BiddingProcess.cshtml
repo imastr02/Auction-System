@@ -22,6 +22,8 @@
         .auction-time strong {
         color: #666;
         }
+
+      
     </style>
 </head>
 
@@ -45,7 +47,36 @@
 
         <h3>Starting Price: @Model.Item?.StartingPrice.ToString("C")</h3> 
 
+       @*  <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Auction Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Start Time:</strong> @Model.AuctionEvent.StartTime.ToString("MMM dd, yyyy HH:mm")</p>
+                        <p><strong>End Time:</strong> @Model.AuctionEvent.EndTime.ToString("MMM dd, yyyy HH:mm")</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <h4>Time Remaining</h4>
+                        <h2 id="auction-timer" class="display-4">Loading...</h2>
 
+                        @if (DateTime.UtcNow > Model.AuctionEvent.EndTime)
+                        {
+                            <div class="alert alert-info">This auction has ended.</div>
+                        }
+                        else if (DateTime.UtcNow < Model.AuctionEvent.StartTime)
+                        {
+                            <div class="alert alert-warning">This auction has not started yet.</div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-success">Auction is active!</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div> *@
 
         <div class="auction-time">
             <h4>Auction Schedule</h4>
@@ -204,3 +235,90 @@
     </div>
 
 }
+
+@* @section Scripts {
+<script>
+
+    function initializeAuctionTimer(endTimeUtc) {
+        // Convert the UTC end time to a JavaScript Date object
+        const endTime = new Date(endTimeUtc);
+
+        // Get the timer display element
+        const timerElement = document.getElementById('auction-timer');
+
+        // Update the timer every second
+        const timerInterval = setInterval(function() {
+            // Get current time
+            const now = new Date();
+
+            // Calculate the time difference in milliseconds
+            let timeDiff = endTime - now;
+
+            // If time is up
+            if (timeDiff <= 0) {
+                clearInterval(timerInterval);
+                timerElement.innerHTML = '<span class="text-danger">Auction Ended</span>';
+
+                // You might want to disable bidding buttons here
+                const bidButtons = document.querySelectorAll('.bid-button');
+                bidButtons.forEach(button => {
+                    button.disabled = true;
+                });
+
+                // Optionally trigger a page refresh to show the final state
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+
+                return;
+            }
+
+            // Calculate days, hours, minutes, seconds
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            // Format the timer display
+            let timerText = '';
+            if (days > 0) {
+                timerText += `${days}d `;
+            }
+            timerText += `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Update the timer display
+            timerElement.textContent = timerText;
+
+            // Change color when time is running out (less than 5 minutes)
+            if (timeDiff < 5 * 60 * 1000) {
+                timerElement.classList.add('text-danger');
+                timerElement.classList.add('blink');
+            }
+        }, 1000);
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    @if (Model.AuctionEvent.EndTime > DateTime.UtcNow && Model.AuctionEvent.StartTime <= DateTime.UtcNow)
+    {
+        <text>
+                // Initialize the timer with the end time in ISO format
+                initializeAuctionTimer('@Model.AuctionEvent.EndTime.ToString("o")');
+        </text>
+    }
+    else if (Model.AuctionEvent.EndTime <= DateTime.UtcNow)
+    {
+        <text>
+                document.getElementById('auction-timer').innerHTML = '<span class="text-danger">Auction Ended</span>';
+        </text>
+    }
+    else
+    {
+        <text>
+                document.getElementById('auction-timer').innerHTML = '<span class="text-warning">Auction Not Started</span>';
+                // Optionally add a timer for when the auction will start
+        </text>
+    }
+    });
+</script>
+} *@

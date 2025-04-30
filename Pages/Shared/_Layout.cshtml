@@ -126,6 +126,7 @@
 								<li> <a id="manage" class="nav-link text-dark" asp-area="" asp-page="/User" title="Manage">My Account</a></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-page="/Buyer/MyBids">My Bids</a></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-page="/Buyer/AuctionWon">Auctions Won</a></li>
+                               
                                 @if(SignInManager.IsSignedIn(User) && User.IsInRole("Seller")) 
                                 {
                                     <li><a class="nav-link" asp-area="" asp-page="\Shared\Seller\Create">Create Item</a></li>

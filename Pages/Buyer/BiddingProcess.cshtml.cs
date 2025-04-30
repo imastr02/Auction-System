@@ -216,6 +216,7 @@ namespace Auction_System.Pages.Buyer
 				.Include(i => i.AuctionEvent) // Include auction event
 				.Include(i => i.Bids!) // Include bids
 					.ThenInclude(b => b.Buyer) // Include buyer details
+					.Include(i => i.Seller)
 				.FirstOrDefaultAsync(m => m.Id == id);
 
 			if (item == null || item.AuctionEvent == null)
@@ -262,8 +263,14 @@ namespace Auction_System.Pages.Buyer
 				//}
 			}
 
+			
+
 			_context.Items.Update(item);
 			await _context.SaveChangesAsync();
+
+			// Create notifications
+			var notificationService = new NotificationService(_context);
+			await notificationService.CreateAuctionEndNotificationsAsync(item);
 
 			TempData["Message"] = "Auction ended successfully!";
 			return RedirectToPage("./Details", new { id = item.Id });
