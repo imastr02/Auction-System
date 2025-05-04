@@ -26,6 +26,7 @@ namespace Auction_System.Services
 		public DbSet<Purchase> Purchases { get; set; }
 		//public DbSet<ChatMessage> ChatMessages { get; set; }
 		public DbSet<Notification> Notifications { get; set; }
+		public DbSet<MpesaTransaction> MpesaTransactions {  get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -73,6 +74,8 @@ namespace Auction_System.Services
 				   .HasOne(i => i.Winner)
 				   .WithMany(u => u.ItemsWon)
 				   .HasForeignKey(i => i.WinnerId);
+
+			 modelBuilder.Entity<Item>().Property(i => i.IsPaid).HasDefaultValue(false);
 
 			modelBuilder.Entity<WatchList>()
 				.HasOne(w => w.Buyer)
@@ -133,7 +136,13 @@ namespace Auction_System.Services
 			.HasForeignKey(ae => ae.SellerId)
 			.OnDelete(DeleteBehavior.Restrict); // Prevent seller deletion if auctions exist
 
+			modelBuilder.Entity<Notification>()
+	  .HasOne(n => n.Item)
+	  .WithMany()
+	  .HasForeignKey(n => n.ItemId)
+	  .OnDelete(DeleteBehavior.Restrict);
 
-			}
+
+		}
 	}
 }

@@ -1,0 +1,73 @@
+﻿
+
+
+@page
+@model TestModel
+@{
+    ViewData["Title"] = "M-Pesa Test Dashboard";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">M-Pesa Test Dashboard</h3>
+                </div>
+                <div class="card-body">
+                    <h5>Test Payment</h5>
+                    <p>Use this page to test M-Pesa payments and view transaction logs.</p>
+                    
+                    <a asp-page="/Checkout" class="btn btn-primary mb-4">Go to Checkout</a>
+                    
+                    <h5>Recent Test Transactions</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Phone Number</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in Model.Transactions)
+                                {
+                                    <tr>
+                                        <td>@transaction.TransactionId</td>
+                                        <td>@transaction.PhoneNumber</td>
+                                        <td>@transaction.Amount KES</td>
+                                        <td>
+                                            @if (transaction.Status == "Completed")
+                                            {
+                                                <span class="badge bg-success">@transaction.Status</span>
+                                            }
+                                            else if (transaction.Status == "Pending")
+                                            {
+                                                <span class="badge bg-warning text-dark">@transaction.Status</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">@transaction.Status</span>
+                                            }
+                                        </td>
+                                        <td>@transaction.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    </tr>
+                                }
+                                
+                                @if (!Model.Transactions.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center">No transactions yet</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

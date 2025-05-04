@@ -27,6 +27,9 @@ namespace Auction_System.Models
 		public DateTime AuctionDate { get; set; }
 
 		public bool IsSold { get; set; }
+		public DateTime? SoldAt { get; set; } // New property
+		public bool IsPaid { get; set; } // New property
+		public DateTime? PaidAt { get; set; } // New property
 		public string? WinnerId {  get; set; }
 		public AppUser? Winner {  get; set; }
 		public decimal SoldPrice {  get; set; }

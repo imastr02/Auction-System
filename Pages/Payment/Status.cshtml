@@ -1,0 +1,70 @@
+﻿@page
+@* @model Auction_System.Pages.Payment.StatusModel
+@{
+}
+ *@
+@* @page*@
+@model StatusModel 
+
+
+@if (Model.PaymentResponse == null || Model.Item == null)
+{
+    <div class="alert alert-danger">
+        Invalid payment status data
+    </div>
+    return;
+}
+
+<div class="container mt-4">
+    <h2>Payment Status</h2>
+    
+    <!-- Payment Status Card -->
+    <div class="card mb-4">
+        <div class="card-body">
+            @if (Model.PaymentResponse.IsSuccessful)
+            {
+                <div class="alert alert-success">
+                    <h4 class="alert-heading">Payment Successful!</h4>
+                    <p class="mb-0">
+                        Transaction ID: @Model.PaymentResponse.TransactionId
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger">
+                    <h4 class="alert-heading">Payment Failed</h4>
+                    <p class="mb-0">
+                        @Model.PaymentResponse.ErrorMessage
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Item Details Card -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Item Details</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Item Name</dt>
+                <dd class="col-sm-9">@Model.Item.Title</dd>
+
+                <dt class="col-sm-3">Amount Paid</dt>
+                <dd class="col-sm-9">@Model.Item.EndingPrice.ToString("C")</dd>
+
+                <dt class="col-sm-3">Seller</dt>
+                <dd class="col-sm-9">@Model.Item.Seller.UserName</dd>
+
+                <dt class="col-sm-3">Payment Date</dt>
+                <dd class="col-sm-9">@DateTime.UtcNow.ToString("f")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-page="/Items/Index" class="btn btn-primary">
+            Continue Shopping
+        </a>
+    </div>
+</div>

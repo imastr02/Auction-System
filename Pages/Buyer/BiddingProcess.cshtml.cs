@@ -243,6 +243,7 @@ namespace Auction_System.Pages.Buyer
 					: item.Bids.OrderByDescending(b => b.Amount).First();
 
 				item.WinnerId = winningBid.BuyerId;
+				item.EndingPrice = (decimal)winningBid.Amount;
 
 				// Get the winner and send email notification
 				var winner = await _userManager.FindByIdAsync(winningBid.BuyerId);
@@ -261,9 +262,8 @@ namespace Auction_System.Pages.Buyer
 				//	await SendMailAsync(name!, email!, item);
 
 				//}
+				//item.EndingPrice = winningBid
 			}
-
-			
 
 			_context.Items.Update(item);
 			await _context.SaveChangesAsync();

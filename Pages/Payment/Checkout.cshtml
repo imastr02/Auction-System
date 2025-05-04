@@ -1,0 +1,55 @@
+﻿@* @page
+@model Auction_System.Pages.Payment.CheckoutModel
+@{
+}
+
+<!-- Pages/Payment/Checkout.cshtml -->
+
+<div class="container mt-4">
+    <h2>Complete Payment</h2>
+    <form method="post">
+        <input type="hidden" asp-for="ItemId" />
+        
+        <div class="form-group">
+            <label>MPesa Phone Number</label>
+            <input asp-for="PhoneNumber" class="form-control" 
+                   placeholder="2547XXXXXXXX" 
+                   pattern="2547\d{8}">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        
+        <button type="submit" class="btn btn-primary mt-3">Initiate Payment</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@
+@page
+@model Auction_System.Pages.Payment.CheckoutModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container">
+    <h2>Complete Payment</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="card-title">@Model.Item.Title</h4>
+            <p class="text-muted">Seller: @Model.Item.Seller.UserName</p>
+            <div class="price-display mb-4">
+                <h3>Total Amount: ₹@Model.Item.EndingPrice.ToString("N2")</h3>
+            </div>
+
+            <form method="post">
+                <div class="form-group">
+                    <label for="phoneNumber">WhatsApp Number</label>
+                    <input type="tel" class="form-control" id="phoneNumber" name="PhoneNumber"
+                           pattern="[0-9]{10}" placeholder="Enter 10-digit number" required>
+                    <small class="form-text text-muted">We'll contact you for delivery</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Confirm Payment</button>
+            </form>
+        </div>
+    </div>
+</div>

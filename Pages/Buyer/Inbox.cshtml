@@ -30,6 +30,17 @@
                                 <div>
                                     <h6 class="mb-1">@notification.Item.Title</h6>
                                     <small class="text-muted">@notification.CreatedAt.ToString("g")</small>
+
+                                    @if (notification.Item != null)
+                                    {
+                                        <form method="post" asp-page-handler="Pay">
+                                            <input type="hidden" name="itemId" value="@notification.Item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-pay">
+                                                <i class="bi bi-credit-card"></i> Pay Now
+                                            </button>
+                                        </form>
+                                    }
+
                                     <div class="mt-1 small">
                                         @switch (notification.Type)
                                         {
@@ -71,6 +82,20 @@
                                 <p class="mb-1">Amount: @Model.SelectedItem.Bids.Max(b => b.Amount)?.ToString("C")</p>
                                 <p class="mb-1">Seller Contact: @Model.SelectedItem.Seller.Email</p>
                                 <p class="mb-0">Payment Due: @DateTime.Now.AddDays(3).ToString("d")</p>
+                                <div class="mt-4">
+                                    <!-- In Pages/Buyer/Inbox.cshtml -->
+                                    @foreach (var notification in Model.Notifications)
+                                    {
+                                        <div class="notification">
+                                            <!-- Add form for payment initiation -->
+                                            <form method="post" asp-page-handler="Pay" asp-route-itemId="@notification.ItemId">
+                                                <button type="submit" class="btn btn-success">Pay Now</button>
+                                            </form>
+                                        </div>
+                                    }
+                                </div>
+
+
                             </div>
                         }
                     </div>
