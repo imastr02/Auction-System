@@ -10,7 +10,7 @@
     </div>
 
     <h2>Payment Successful!</h2>
-    <p class="lead">₹@Model.Item.EndingPrice.ToString("N2") paid for @Model.Item.Title</p>
+    <p class="lead">ksh @Model.Item.EndingPrice.ToString("N2") paid for @Model.Item.Title</p>
 
     <div class="seller-info card mt-4">
         <div class="card-body">
@@ -20,6 +20,12 @@
                 Email: @Model.Item.Seller.Email<br>
                 Your Contact: @Model.PhoneNumber
             </p>
+            <div class="text-center mt-4">
+                <a asp-page="/Payment/Receipt" asp-route-id="@Model.Item.Id" class="btn btn-outline-primary">
+                    <i class="bi bi-receipt-cutoff"></i> Download Receipt
+                </a>
+            </div>
+
             <a href="/Buyer/Inbox" class="btn btn-success">
                 Return to Inbox
             </a>

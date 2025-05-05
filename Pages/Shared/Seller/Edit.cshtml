@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model Auction_System.Pages.Shared.Seller.EditModel
 
 @* @{
@@ -6,7 +6,7 @@
 } *@
 
 
-
+@* 
 <h4>Edit Item</h4>
 <hr />
 <div class="row">
@@ -29,8 +29,8 @@
                 <input asp-for="Item.StartingPrice" class="form-control" />
                 <span asp-validation-for="Item.StartingPrice" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
+ *@
+         @*    <div class="form-group">
                 <label asp-for="Item.ImagePath" class="control-label">Image:</label>
                 <div class="col-sm-8">
                     <img src="@Model.Item.ImagePath" width="150"/>
@@ -56,9 +56,9 @@
                 <label asp-for="Item.StartingTime" class="control-label"></label>
                 <input asp-for="Item.StartingTime" type="datetime-local" class="form-control" type="time" />
                 <span asp-validation-for="Item.StartingTime" class="text-danger"></span>
-            </div>
+            </div> *@
 
-            <div class="form-group">
+           @*  <div class="form-group">
                 <label asp-for="Item.EndingTime" class="control-label"></label>
                 <input asp-for="Item.EndingTime" type="datetime-local" class="form-control" type="time" />
                 <span asp-validation-for="Item.EndingTime" class="text-danger"></span>
@@ -79,7 +79,150 @@
 <div>
     <a asp-page="./Index">Back to List</a>
 </div>
+ *@
+@* @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} *@
+ 
+                @page
+@model Auction_System.Pages.Shared.Seller.EditModel
+
+@{
+    ViewData["Title"] = "Edit Item";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+<style>
+    .auction-card {
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: none;
+        overflow: hidden;
+    }
+
+    .auction-header {
+        background: linear-gradient(90deg, #003366, #005599);
+        color: #fff;
+        padding: 1.5rem;
+    }
+
+        .auction-header h4 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .btn-save {
+        background-color: #ff9900;
+        border: none;
+        color: #fff;
+        font-weight: bold;
+    }
+
+        .btn-save:hover {
+            background-color: #e68a00;
+        }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        padding: 0.6rem 1rem;
+    }
+
+    .img-thumbnail {
+        border-radius: 12px;
+        border: 2px solid #eee;
+    }
+
+    .back-link {
+        color: #005599;
+        font-weight: 500;
+    }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="card auction-card">
+        <div class="auction-header">
+            <h4>Edit Auction Item</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Item.Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Item.Title" class="form-label"></label>
+                    <input asp-for="Item.Title" class="form-control" />
+                    <span asp-validation-for="Item.Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Item.Description" class="form-label"></label>
+                    <input asp-for="Item.Description" class="form-control" />
+                    <span asp-validation-for="Item.Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Item.StartingPrice" class="form-label"></label>
+                    <input asp-for="Item.StartingPrice" class="form-control" />
+                    <span asp-validation-for="Item.StartingPrice" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Current Image</label><br />
+                    <img src="@Model.Item.ImagePath" alt="Item Image" class="img-thumbnail" style="max-width: 150px;" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageFile" class="form-label">Change Image</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Item.CategoryId" class="form-label">Category</label>
+                    <select asp-for="Item.CategoryId" asp-items="Model.Categories" class="form-select">
+                        <option value="">-- Select a Category --</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Item.StartingTime" class="form-label"></label>
+                    <input asp-for="Item.StartingTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Item.StartingTime" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Item.EndingTime" class="form-label"></label>
+                    <input asp-for="Item.EndingTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Item.EndingTime" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Created At:</label>
+                    <input readonly class="form-control-plaintext" value="@Model.Item.CreatedAt" />
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <a asp-page="./Index" class="back-link">← Back to List</a>
+                    <input type="submit" value="Save Changes" class="btn btn-save px-4 py-2" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,4 +1,4 @@
-﻿@page "{itemId:int}"
+﻿@* @page "{itemId:int}"
 @model Auction_System.Pages.Buyer.Feedback.CreateModel
 
 <div class="container mt-4">
@@ -43,4 +43,94 @@
             </form>
         </div>
     </div>
+</div> *@
+
+                    @page "{itemId:int}"
+@model Auction_System.Pages.Buyer.Feedback.CreateModel
+
+@section Styles {
+    <style>
+        .star-rating {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #ccc;
+        }
+
+            .star-rating .bi-star-fill {
+                color: #ffc107;
+            }
+    </style>
+}
+
+<div class="container mt-5">
+    <div class="card shadow rounded-4 border-0">
+        <div class="card-header bg-gradient bg-primary text-white rounded-top-4">
+            <h4 class="mb-0">
+                <i class="bi bi-chat-square-text me-2"></i> Leave Feedback for Item #@Model.ItemId
+            </h4>
+        </div>
+        <div class="card-body px-4 py-5">
+            <form method="post" id="feedbackForm">
+                <input type="hidden" asp-for="Feedback.ItemId" />
+                <input type="hidden" asp-for="Feedback.BuyerId" />
+                <input type="hidden" asp-for="Feedback.SellerId" />
+                <input type="hidden" asp-for="Feedback.FeedbackDate" />
+                <input type="hidden" asp-for="Feedback.Rating" id="ratingValue" />
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-star-fill text-warning me-1"></i>Rating*
+                    </label>
+                    <div id="starRating" class="star-rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="bi bi-star" data-value="@i"></i>
+                        }
+                    </div>
+                    <span asp-validation-for="Feedback.Rating" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Feedback.Comment" class="form-label fw-semibold">
+                        <i class="bi bi-pencil-square me-1 text-secondary"></i>Comments
+                    </label>
+                    <textarea asp-for="Feedback.Comment" class="form-control" rows="5" placeholder="Share your experience with this item and seller..."></textarea>
+                    <span asp-validation-for="Feedback.Comment" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a asp-page="../Details" asp-route-id="@Model.ItemId" class="btn btn-outline-secondary me-3">
+                        <i class="bi bi-arrow-left"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send-fill me-1"></i> Submit Feedback
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        const stars = document.querySelectorAll('#starRating i');
+        const ratingInput = document.getElementById('ratingValue');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                const rating = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = rating;
+
+                // Reset all stars
+                stars.forEach(s => s.classList.remove('bi-star-fill'));
+                stars.forEach(s => s.classList.add('bi-star'));
+
+                // Highlight selected
+                for (let i = 0; i < rating; i++) {
+                    stars[i].classList.remove('bi-star');
+                    stars[i].classList.add('bi-star-fill');
+                }
+            });
+        });
+    </script>
+}

@@ -134,13 +134,13 @@ namespace Auction_System.Services
 			.HasOne(ae => ae.Seller)
 			.WithMany(u => u.AuctionEvents)
 			.HasForeignKey(ae => ae.SellerId)
-			.OnDelete(DeleteBehavior.Restrict); // Prevent seller deletion if auctions exist
+			.OnDelete(DeleteBehavior.SetNull); // Prevent seller deletion if auctions exist
 
 			modelBuilder.Entity<Notification>()
 	  .HasOne(n => n.Item)
 	  .WithMany()
 	  .HasForeignKey(n => n.ItemId)
-	  .OnDelete(DeleteBehavior.Restrict);
+	  .OnDelete(DeleteBehavior.Cascade);
 
 
 		}

@@ -1,0 +1,35 @@
+﻿@page
+@model Auction_System.Pages.Admin.ViewBuyersModel
+@using Auction_System.Models
+
+@{
+    ViewData["Title"] = "All Buyers";
+}
+
+<h2 class="mb-4">All Registered Buyers</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date Joined</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var buyer in Model.Buyers)
+        {
+            <tr>
+                <td>@buyer.FirstName @buyer.LastName</td>
+                <td>@buyer.Email</td>
+                <td>@buyer.CreatedAt.ToShortDateString()</td>
+                <td>
+                    <a asp-page="/Admin/BuyerPurchaseHistory" asp-route-id="@buyer.Id" class="btn btn-sm btn-primary">
+                        View Purchase History
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

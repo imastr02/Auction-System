@@ -27,6 +27,7 @@ namespace Auction_System.Pages.Buyer
 
 		public bool IsInWatchlist { get; set; }
 		public bool IsWinner {  get; set; }
+		public bool HasFeedback { get; set; }
 
 		[BindProperty]
 		public decimal BidAmount { get; set; }
@@ -79,6 +80,15 @@ namespace Auction_System.Pages.Buyer
 				IsInWatchlist = await _watchlistService.IsItemInWatchlistAsync(user.Id, Item.Id);
 			}
 			IsWinner = user != null && Item.WinnerId == user.Id;
+
+			// Add this check for feedback
+			if (User.Identity?.IsAuthenticated == true && Item?.WinnerId != null)
+			{
+				var currentUser = await _userManager.GetUserAsync(User);
+				IsWinner = currentUser != null && Item.WinnerId == currentUser.Id;
+				HasFeedback = await _context.Feedbacks
+					.AnyAsync(f => f.ItemId == Item.Id && f.BuyerId == currentUser.Id);
+			}
 
 			return Page();
 		}

@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model Auction_System.Pages.Shared.Seller.DetailsModel
 
 @{
@@ -40,7 +40,7 @@
         </dt>
         <dd class="col-sm-10">
           @*   @Html.DisplayFor(model => model.Item.ImagePath) *@
-            <img src="@Url.Content(Model.Item.ImagePath)" alt="No Image" class="img-fluid" width="100"/>
+      @*       <img src="@Url.Content(Model.Item.ImagePath)" alt="No Image" class="img-fluid" width="100"/>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Item.Category)
@@ -70,10 +70,123 @@
             @Html.DisplayFor(model => model.Item.AuctionDate)
         </dd>
     </dl>
-</div>
-
+</div> *@
+@* 
 
 <div>
     <a asp-page="./Edit" asp-route-id="@Model.Item.Id">Edit</a> |
     <a asp-page="./Index">Back to List</a>
+</div>
+ *@ 
+
+        @page
+@model Auction_System.Pages.Shared.Seller.DetailsModel
+
+@{
+    ViewData["Title"] = "Item Details";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+<style>
+    .details-card {
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 2rem;
+        background-color: #fff;
+    }
+
+    .details-header {
+        background: linear-gradient(90deg, #003366, #005599);
+        color: #fff;
+        padding: 1.5rem;
+        border-radius: 16px 16px 0 0;
+    }
+
+        .details-header h2 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+    .details-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .details-image {
+        max-width: 150px;
+        border-radius: 12px;
+        border: 2px solid #eee;
+    }
+
+    .btn-custom {
+        background-color: #ff9900;
+        border: none;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #e68a00;
+        }
+
+    .back-link {
+        color: #005599;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="details-card">
+
+        <div class="details-header mb-4">
+            <h2>Item Details</h2>
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3 details-label">Title</dt>
+            <dd class="col-sm-9">@Model.Item.Title</dd>
+
+            <dt class="col-sm-3 details-label">Description</dt>
+            <dd class="col-sm-9">@Model.Item.Description</dd>
+
+            <dt class="col-sm-3 details-label">Starting Price</dt>
+            <dd class="col-sm-9">@Model.Item.StartingPrice.ToString("C")</dd>
+
+            <dt class="col-sm-3 details-label">Created At</dt>
+            <dd class="col-sm-9">@Model.Item.CreatedAt.ToString("g")</dd>
+
+            <dt class="col-sm-3 details-label">Image</dt>
+            <dd class="col-sm-9">
+                <img src="@Url.Content(Model.Item.ImagePath)" alt="Item Image" class="details-image" />
+            </dd>
+
+            <dt class="col-sm-3 details-label">Category</dt>
+            <dd class="col-sm-9">@Model.Item.Category?.CategoryName</dd>
+
+            <dt class="col-sm-3 details-label">Starting Time</dt>
+            <dd class="col-sm-9">@Model.Item.StartingTime.ToShortTimeString()</dd>
+
+            <dt class="col-sm-3 details-label">Ending Time</dt>
+            <dd class="col-sm-9">@Model.Item.EndingTime.ToShortTimeString()</dd>
+
+            <dt class="col-sm-3 details-label">Auction Date</dt>
+            <dd class="col-sm-9">@Model.Item.AuctionDate.ToShortDateString()</dd>
+        </dl>
+
+        <div class="mt-4 d-flex justify-content-between">
+            <a asp-page="./Index" class="back-link">← Back to List</a>
+            <a asp-page="./Edit" asp-route-id="@Model.Item.Id" class="btn btn-custom">Edit Item</a>
+        </div>
+
+    </div>
 </div>

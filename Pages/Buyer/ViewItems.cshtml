@@ -6,50 +6,60 @@
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 
+    <style>
+    .product-image-container {
+        height: 180px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .product-image {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .product-card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .product-card:hover {
+            transform: scale(1.03);
+        }
+
+    </style>
+
 <div class="container mt-3">
     <h4 class="fw-bold">Top Deals | Shop Now</h4>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
         @foreach (var item in Model.Items)
         {
-
-
-            <a asp-page="/Buyer/Details" asp-route-id="@item.Id" class="">
             <div class="col">
-                <div class="product-card shadow-sm">
-                   @*  <!-- Discount Badge -->
-                    @if (item.Discount > 0)
-                    {
-                        <span class="discount-badge">@item.Discount% OFF</span>
-                    } *@
+                <a asp-page="/Buyer/Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm product-card">
+                        <!-- Image -->
+                        <div class="product-image-container">
+                            <img src="@item.ImagePath" alt="@item.Title" class="card-img-top product-image" />
+                        </div>
 
-                    <!-- Product Image -->
-                    <div class="product-image">
-                        <img src="@item.ImagePath" class="img-fluid" alt="@item.Title">
+                        <!-- Info -->
+                        <div class="card-body p-2">
+                            <h6 class="card-title mb-1">@item.Title</h6>
+                            <p class="card-text mb-1"><strong>Date:</strong> @item.AuctionDate.ToShortDateString()</p>
+                            <p class="card-text"><strong>Starting Price:</strong> KSh @item.StartingPrice.ToString("N0")</p>
+                        </div>
                     </div>
-
-                    <!-- Product Info -->
-                    <div class="product-info p-2">
-                        <p class="product-title">@item.Title</p>
-                        <p class="product-price">Starting Price: KSh @item.StartingPrice.ToString("N0")</p>
-                       @*  @if (item.OldPrice > item.Price)
-                        {
-                            <p class="product-old-price">KSh @item.OldPrice.ToString("N0")</p>
-                        } *@
-                    </div>
-
-                   @*  <!-- Hover Add to Watchlist -->
-                    <div class="watchlist-overlay">
-                        <button class="btn btn-warning btn-sm">+ Watchlist</button>
-                    </div> *@
-                </div>
+                </a>
             </div>
-            </a>
         }
     </div>
 </div>
+
 <nav>
-    <ul class="pagination">
+    <ul class="pagination mt-4">
         <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
             <a class="page-link" asp-page="./ViewItems" asp-route-pageIndex="@(Model.PageIndex - 1)">Previous</a>
         </li>
@@ -57,13 +67,13 @@
         {
             <li class="page-item @(i == Model.PageIndex ? "active" : "")">
                 <a class="page-link" asp-page="./ViewItems" asp-route-pageIndex="@i">@i</a>
-            </li> 
+            </li>
         }
         <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
             <a class="page-link" asp-page="./ViewItems" asp-route-pageIndex="@(Model.PageIndex + 1)">Next</a>
         </li>
     </ul>
-</nav>  
+</nav>
 
 
 

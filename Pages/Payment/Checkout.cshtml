@@ -1,33 +1,6 @@
 ﻿@* @page
 @model Auction_System.Pages.Payment.CheckoutModel
 @{
-}
-
-<!-- Pages/Payment/Checkout.cshtml -->
-
-<div class="container mt-4">
-    <h2>Complete Payment</h2>
-    <form method="post">
-        <input type="hidden" asp-for="ItemId" />
-        
-        <div class="form-group">
-            <label>MPesa Phone Number</label>
-            <input asp-for="PhoneNumber" class="form-control" 
-                   placeholder="2547XXXXXXXX" 
-                   pattern="2547\d{8}">
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
-        
-        <button type="submit" class="btn btn-primary mt-3">Initiate Payment</button>
-    </form>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-} *@
-@page
-@model Auction_System.Pages.Payment.CheckoutModel
-@{
     ViewData["Title"] = "Checkout";
 }
 
@@ -51,5 +24,79 @@
                 <button type="submit" class="btn btn-primary btn-block">Confirm Payment</button>
             </form>
         </div>
+    </div>
+</div> *@
+@page
+@model Auction_System.Pages.Payment.CheckoutModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+<style>
+    .checkout-card {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        background-color: #ffffff;
+    }
+
+    .checkout-header {
+        background: linear-gradient(90deg, #1a73e8, #0066cc);
+        color: white;
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1.1rem;
+        margin-top: 1rem;
+        border-radius: 8px;
+    }
+
+    .price-display h3 {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="container">
+    <div class="checkout-card">
+        <div class="checkout-header">
+            <h2>Complete Your Payment</h2>
+        </div>
+
+        <h4 class="mb-1">@Model.Item.Title</h4>
+        <p class="text-muted mb-3">Sold by: <strong>@Model.Item.Seller.UserName</strong></p>
+
+        <div class="price-display mb-4">
+            <h3>Total Amount: @Model.Item.EndingPrice.ToString("N2")</h3>
+        </div>
+
+        <form method="post">
+            <div class="form-group">
+                <label for="phoneNumber" class="form-label">WhatsApp Number</label>
+                <input type="tel" class="form-control" id="phoneNumber" name="PhoneNumber"
+                       pattern="[0-9]{10}" placeholder="Enter 10-digit number" required />
+                <small class="form-text text-muted">We'll contact you via WhatsApp for delivery confirmation</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Confirm Payment</button>
+        </form>
     </div>
 </div>

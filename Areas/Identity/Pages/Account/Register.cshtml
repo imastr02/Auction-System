@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model RegisterModel
 @{
     ViewData["Title"] = "Create an Account";
@@ -54,7 +54,7 @@
                 <input type="checkbox" required />
                 <label>I agree to the <a href="#">Terms & Conditions</a></label>
             </div> *@
-
+@* 
             <button type="submit" class="btn-primary">Create account</button>
 
            @*  <div class="divider">or register with</div>
@@ -62,7 +62,271 @@
             <div class="social-buttons">
                 <button type="button" class="btn-google">Google</button>
                 <button type="button" class="btn-apple">Apple</button>
-            </div> *@
+   @*  *@
+@* 
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Create an Account";
+}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+        }
+
+        .register-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+        }
+
+        .image-section {
+            position: relative;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('../images/AuctionBgImage02.jpg') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .overlay-text {
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+            .overlay-text h2 {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+            }
+
+        .form-section {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+            .form-section h2 {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+                color: var(--primary-color);
+            }
+
+            .form-section p {
+                margin-bottom: 2rem;
+                color: #666;
+            }
+
+            .form-section a {
+                color: var(--secondary-color);
+                text-decoration: none;
+            }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            input:focus, select:focus {
+                border-color: var(--secondary-color);
+                outline: none;
+                box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+            }
+
+        button[type="submit"] {
+            background: var(--secondary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+            button[type="submit"]:hover {
+                background: #2980b9;
+                transform: translateY(-2px);
+            }
+
+        .terms {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            color: #666;
+        }
+
+            .divider::before,
+            .divider::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #ddd;
+                position: absolute;
+                width: 45%;
+                top: 50%;
+            }
+
+            .divider::before {
+                left: 0;
+            }
+
+            .divider::after {
+                right: 0;
+            }
+
+        @@media (max-width: 768px) {
+            .register-container {
+                grid-template-columns: 1fr;
+            }
+
+            .image-section {
+                padding: 4rem 1rem;
+                min-height: 300px;
+            }
+
+            .form-section {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<div class="register-container">
+    <div class="image-section">
+        <div class="overlay-text">
+            <h2>Rare Finds, Incredible Prices</h2>
+            <p>Join our community of collectors and enthusiasts</p>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2>Create an account</h2>
+        <p>Already have an account? <a asp-page="./Login">Log in</a></p>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div class="form-group" style="grid-template-columns: 1fr 1fr;">
+                <div class="input-wrapper">
+                    <input asp-for="Input.FirstName" placeholder="First Name" required />
+                </div>
+                <div class="input-wrapper">
+                    <input asp-for="Input.LastName" placeholder="Last Name" required />
+                </div>
+            </div>
+
+            <div class="form-group" style="grid-template-columns: 1fr 1fr;">
+                <div class="input-wrapper">
+                    <input asp-for="Input.PhoneNumber" placeholder="Phone Number" required />
+                </div>
+                <div class="input-wrapper">
+                    <input asp-for="Input.City" placeholder="City" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Input.Email" placeholder="Email" required />
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Input.Password" placeholder="Password" type="password" required />
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Input.ConfirmPassword" placeholder="Confirm Password" type="password" required />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Role">Account Type</label>
+                <select asp-for="Input.Role" class="form-control">
+                    <option value="Buyer">Buyer</option>
+                    <option value="Seller">Seller</option>
+                </select>
+                <span asp-validation-for="Input.Role" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-primary">Create account</button>
         </form>
+    </div>
+</div> *@
+
+
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Create an Account";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<div class="register-wrapper">
+    <!-- Left Image Section -->
+    <div class="image-side">
+        <img src="~/images/AuctionBgImage02.jpg" alt="Auction" />
+        @* <div class="image-overlay">
+            <h2>Rare Finds, Incredible Prices</h2>
+        </div> *@
+    </div>
+
+    <!-- Right Form Section -->
+    <div class="form-side">
+        <div class="form-card">
+            <h2>Create an Account</h2>
+            <p>Already have an account? <a asp-page="./Login">Log in</a></p>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div class="input-row">
+                    <input asp-for="Input.FirstName" placeholder="First Name" required />
+                    <input asp-for="Input.LastName" placeholder="Last Name" required />
+                </div>
+
+                <div class="input-row">
+                    <input asp-for="Input.PhoneNumber" placeholder="Phone Number" required />
+                    <input asp-for="Input.City" placeholder="City" required />
+                </div>
+
+                <input asp-for="Input.Email" placeholder="Email" required />
+                <input asp-for="Input.Password" type="password" placeholder="Enter your password" required />
+                <input asp-for="Input.ConfirmPassword" type="password" placeholder="Confirm your password" required />
+
+                <div class="select-role">
+                    <label asp-for="Input.Role">Choose Role</label>
+                    <select asp-for="Input.Role">
+                        <option value="Buyer">Buyer</option>
+                        <option value="Seller">Seller</option>
+                    </select>
+                    <span asp-validation-for="Input.Role" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+        </div>
     </div>
 </div>

@@ -2,84 +2,107 @@
 @model Auction_System.Pages.Shared.Seller.SellerRatingsModel
 
 <div class="container mt-4">
-    <div class="card seller-profile-card">
-        <div class="card-header bg-primary text-white">
-            <h2>Seller: @Model.Seller?.UserName</h2>
-            <div class="d-flex align-items-center mt-2">
-                <div class="display-4 me-3">@Model.AverageRating.ToString("0.0")</div>
-                <div>
-                    <div class="rating-stars">
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <i class="bi @(i < Math.Floor(Model.AverageRating) ? "bi-star-fill" : "bi-star")"></i>
-                        }
-                    </div>
-                    <small>@Model.SoldItems.SelectMany(i => i.Feedbacks!).Count() reviews</small>
+    <div class="card seller-profile-card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white py-4">
+            <div class="d-flex align-items-center gap-4">
+                <div class="seller-avatar">
+                    <i class="bi bi-person-circle display-4"></i>
                 </div>
-            </div>
-            <div class="total-sales">
-                <span class="badge bg-success fs-6">
-                    @Model.SoldItems.Count items sold
-                </span>
+                <div>
+                    <h1 class="h2 mb-3">@Model.Seller?.UserName</h1><p class="mb-2 text-light small">
+                        <h4>Contact Details</h4>
+                        <i class="bi bi-envelope me-2"></i> @Model.Seller?.Email <br />
+                        <i class="bi bi-telephone me-2"></i> @Model.Seller?.PhoneNumber
+                    </p>
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="rating-summary">
+                            <div class="display-3 fw-bold">@Model.AverageRating.ToString("0.0")</div>
+                            <div class="rating-stars">
+                                @for (int i = 0; i < 5; i++)
+                                {
+                                    <i class="bi @(i < Math.Floor(Model.AverageRating) ? "bi-star-fill" : "bi-star") fs-4"></i>
+                                }
+                            </div>
+                            <small class="text-light opacity-75">@Model.SoldItems.SelectMany(i => i.Feedbacks!).Count() reviews</small>
+                        </div>
+                        <div class="vr"></div>
+                        <div class="sales-info">
+                            <div class="h5 mb-2">Total Sales</div>
+                            <div class="display-5 fw-bold">@Model.SoldItems.Count</div>
+                            <small class="text-light opacity-75">items sold</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card-body">
-            <h3 class="mb-4">Sold Items History</h3>
+        <div class="card-body p-4">
+            <h3 class="h4 mb-4 border-bottom pb-3">Transaction History</h3>
 
             @foreach (var item in Model.SoldItems)
             {
-                <div class="sold-item card mb-4">
+                <div class="sold-item card mb-4 border-0 shadow-sm hover-shadow transition-all">
                     <div class="row g-0">
                         <!-- Item Image -->
-                        <div class="col-md-2">
+                        <div class="col-md-2 bg-light d-flex align-items-center p-3">
                             <img src="@(item.ImagePath?.Split(',')[0] ?? "/images/default-item.jpg")"
-                                 class="img-fluid rounded-start"
+                                 class="img-fluid rounded-3"
                                  alt="@item.Title"
                                  style="max-height: 150px; object-fit: contain;">
                         </div>
 
                         <!-- Item Details -->
                         <div class="col-md-10">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
                                     <div>
-                                        <h5 class="card-title mb-1">@item.Title</h5>
-                                        <p class="text-muted small mb-2">
-                                            Sold on @item.AuctionDate.ToShortDateString()
-                                            to @item.Winner?.UserName
-                                        </p>
-                                    </div>
-                                    <div class="winning-bid-amount bg-success text-white p-2 rounded">
-                                        <div class="text-center">
-                                            <div class="fs-6">Winning Bid</div>
-                                            <div class="fs-4 fw-bold">@item.Bids?.Max(b => b.Amount)?.ToString("C")</div>
+                                        <h5 class="card-title mb-2">@item.Title</h5>
+                                        <div class="d-flex gap-3 text-muted small">
+                                            <div>
+                                                <i class="bi bi-calendar me-1"></i>
+                                                @item.AuctionDate.ToString("MMM dd, yyyy")
+                                            </div>
+                                            <div>
+                                                <i class="bi bi-person-check me-1"></i>
+                                                @item.Winner?.UserName
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="winning-bid-amount bg-success text-white p-3 rounded-3 text-center">
+                                        <div class="h6 mb-0">Final Price</div>
+                                        <div class="h3 fw-bold mb-0">@item.Bids?.Max(b => b.Amount)?.ToString("C")</div>
                                     </div>
                                 </div>
 
-                                <p class="card-text">@item.Description!.Truncate(200)</p>
+                                <p class="card-text text-muted mb-4">@item.Description!.Truncate(200)</p>
 
                                 <!-- Feedback Section -->
                                 @if (item.Feedbacks!.Any())
                                 {
-                                    <div class="mt-3 pt-2 border-top">
-                                        <h6><i class="bi bi-chat-left-text"></i> Feedback Received</h6>
+                                    <div class="border-top pt-3">
+                                        <h6 class="mb-3 d-flex align-items-center gap-2">
+                                            <i class="bi bi-chat-square-text-fill text-primary"></i>
+                                            Buyer Feedback
+                                        </h6>
                                         @foreach (var feedback in item.Feedbacks!)
                                         {
-                                            <div class="feedback-item card mt-2">
+                                            <div class="feedback-item card mb-3 border-0 bg-light">
                                                 <div class="card-body p-3">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div class="rating">
-                                                            @for (int i = 0; i < 5; i++)
-                                                            {
-                                                                <i class="bi @(i < feedback.Rating ? "bi-star-fill text-warning" : "bi-star")"></i>
-                                                            }
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div class="rating">
+                                                                @for (int i = 0; i < 5; i++)
+                                                                {
+                                                                    <i class="bi @(i < feedback.Rating ? "bi-star-fill text-warning" : "bi-star text-muted")"></i>
+                                                                }
+                                                            </div>
+                                                            <small class="text-muted">@feedback.Buyer?.UserName</small>
                                                         </div>
-                                                        <small class="text-muted">@feedback.FeedbackDate.ToShortDateString()</small>
+                                                        <small class="text-muted">@feedback.FeedbackDate.ToString("MMM dd, yyyy")</small>
                                                     </div>
-                                                    <p class="my-2">"@feedback.Comment"</p>
-                                                    <small>- @feedback.Buyer?.UserName</small>
+                                                    <blockquote class="mt-2 mb-0 ps-3 border-start border-3 border-primary">
+                                                        <p class="mb-0 font-italic">"@feedback.Comment"</p>
+                                                    </blockquote>
                                                 </div>
                                             </div>
                                         }
@@ -96,22 +119,37 @@
 
 <style>
     .seller-profile-card {
-        border: none;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .seller-avatar {
+        width: 120px;
+        height: 120px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .sold-item {
-        border-left: 4px solid #28a745;
-        transition: transform 0.2s;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
     }
 
-        .sold-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    .hover-shadow {
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+    }
+
+        .hover-shadow:hover {
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
 
     .winning-bid-amount {
-        min-width: 120px;
+        min-width: 160px;
+        background: linear-gradient(135deg, #28a745, #218838);
     }
 
     .rating-stars, .rating {
@@ -119,7 +157,34 @@
     }
 
     .feedback-item {
-        background-color: #f8f9fa;
-        border-left: 3px solid #6c757d;
+        border-radius: 0.5rem;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+
+    @@media (max-width: 768px) {
+        .seller-profile-card .card-header {
+            text-align: center;
+            flex-direction: column;
+        }
+
+        .seller-avatar {
+            margin: 0 auto 1rem;
+        }
+
+        .winning-bid-amount {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .sold-item .row {
+            flex-direction: column;
+        }
+
+        .sold-item img {
+            max-height: 200px !important;
+        }
     }
 </style>

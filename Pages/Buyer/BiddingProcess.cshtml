@@ -1,324 +1,302 @@
-﻿@page
+﻿
+@page
 @model Auction_System.Pages.Buyer.BiddingProcessModel
 @using Microsoft.AspNetCore.Identity
 @using Auction_System.Models
 @inject UserManager<AppUser> UserManager
 
 <head>
-    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .auction-time {
-        margin: 20px 0;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
+        .auction-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
 
-        .auction-time h4 {
-        color: #333;
-        margin-bottom: 15px;
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
 
-        .auction-time strong {
-        color: #666;
+        .image-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-      
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .details-section {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .auction-status-card {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .bid-form {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .bid-history-table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .winner-card {
+            background: #e8f5e9;
+            border-left: 4px solid #2ecc71;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        @@media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-image {
+                height: 300px;
+            }
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        async function downloadBidHistoryPDF() {
+            const { jsPDF } = window.jspdf;
+            const bidElement = document.getElementById("printable-bids");
+
+            const canvas = await html2canvas(bidElement, { scale: 2 });
+            const imgData = canvas.toDataURL("image/png");
+
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pageWidth = pdf.internal.pageSize.getWidth();
+
+            // Header values
+            const itemTitle = "@Model.Item?.Title".replace(/"/g, "'");
+            const currentDate = new Date().toLocaleDateString();
+
+            // Title/Header
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(16);
+            pdf.text("Auction Bid History", pageWidth / 2, 15, { align: "center" });
+
+            pdf.setFontSize(12);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(`Item: ${itemTitle}`, 10, 25);
+            pdf.text(`Date: ${currentDate}`, 10, 32);
+
+            // Image data
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pageWidth - 20; // margin
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            pdf.addImage(imgData, "PNG", 10, 40, pdfWidth, pdfHeight);
+            pdf.save("BidHistory.pdf");
+        }
+    </script>
+
+
+
 </head>
 
-
-
-<div class="product-page">
-    <!-- Left Section: Image Gallery -->
-    <div class="image-section">
-        <div class="main-image">
-            <img id="displayed-image" src="@(Model.Item?.ImagePath?.Split(',')[0] ?? "/images/default.jpg")" alt="Main Product Image">
-        </div>
-    </div>
-
-    <!-- Right Section: Product Details -->
-    <div class="details-section">
-        <h2>@Model.Item?.Title</h2>
-
-        <div class="seller-info">
-            <a class="seller-name" asp-page="/Shared/Seller/SellerRatings" asp-route-Id="@Model.Item?.SellerId">@(Model.Seller?.UserName ?? "Unknown Seller")</a>
+<div class="auction-container">
+    <div class="product-grid">
+        <!-- Image Section -->
+        <div class="image-section">
+            <img class="main-image" 
+                 src="@(Model.Item?.ImagePath?.Split(',')[0] ?? "/images/default.jpg")" 
+                 alt="Auction Item">
         </div>
 
-        <h3>Starting Price: @Model.Item?.StartingPrice.ToString("C")</h3> 
+        <!-- Details Section -->
+        <div class="details-section">
+            <h1 class="mb-3">@Model.Item?.Title</h1>
 
-       @*  <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Auction Status</h5>
+            <div class="seller-info">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="fas fa-user-circle text-secondary"></i>
+                    <a class="seller-name" asp-page="/Shared/Seller/SellerRatings" asp-route-Id="@Model.Item?.SellerId">
+                        @(Model.Seller?.UserName ?? "Unknown Seller")
+                    </a>
+                </div>
+                <div class="d-flex gap-2 text-secondary">
+                    <small><i class="fas fa-star text-warning"></i> 99.8% positive</small>
+                    <small>•</small>
+                    <small><i class="fas fa-store"></i> Seller's items</small>
+                    <small>•</small>
+                    <small><i class="fas fa-comments"></i> Contact</small>
+                </div>
             </div>
-            <div class="card-body">
+
+            <!-- Starting Price Display -->
+            <div class="price-display mb-4">
+                <div class="text-muted small">STARTING PRICE</div>
+                <div class="h2 text-primary">
+                    @Model.Item?.StartingPrice.ToString("C")
+                </div>
+            </div>
+            
+            <div class="seller-info mb-4">
+                <a class="text-decoration-none" 
+                   asp-page="/Shared/Seller/SellerRatings" 
+                   asp-route-Id="@Model.Item?.SellerId">
+                    <i class="fas fa-store me-2"></i>
+                    @(Model.Seller?.UserName ?? "Unknown Seller")
+                </a>
+            </div>
+
+            <div class="auction-status-card">
+                <h4 class="mb-3"><i class="fas fa-gavel me-2"></i>Auction Schedule</h4>
                 <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Start Time:</strong> @Model.AuctionEvent.StartTime.ToString("MMM dd, yyyy HH:mm")</p>
-                        <p><strong>End Time:</strong> @Model.AuctionEvent.EndTime.ToString("MMM dd, yyyy HH:mm")</p>
+                    <div class="col-md-6 mb-3">
+                        <div class="text-muted small">START TIME</div>
+                        <div class="h5">
+                            @Model.Item.AuctionEvent?.StartTime.ToString("MMM dd, yyyy hh:mm tt")
+                        </div>
                     </div>
-                    <div class="col-md-6 text-center">
-                        <h4>Time Remaining</h4>
-                        <h2 id="auction-timer" class="display-4">Loading...</h2>
-
-                        @if (DateTime.UtcNow > Model.AuctionEvent.EndTime)
-                        {
-                            <div class="alert alert-info">This auction has ended.</div>
-                        }
-                        else if (DateTime.UtcNow < Model.AuctionEvent.StartTime)
-                        {
-                            <div class="alert alert-warning">This auction has not started yet.</div>
-                        }
-                        else
-                        {
-                            <div class="alert alert-success">Auction is active!</div>
-                        }
+                    <div class="col-md-6 mb-3">
+                        <div class="text-muted small">END TIME</div>
+                        <div class="h5">
+                            @Model.Item.AuctionEvent?.EndTime.ToString("MMM dd, yyyy hh:mm tt")
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div> *@
-
-        <div class="auction-time">
-            <h4>Auction Schedule</h4>
-            <div class="row">
-                <div class="col-md-6">
-                    <strong>Start Time:</strong>
-                    @if (Model.Item.AuctionEvent != null)
-                    {
-                        <span>@Model.Item.AuctionEvent.StartTime.ToString("MM/dd/yyyy hh:mm tt")</span>
-                    }
-                    else
-                    {
-                        <span class="text-muted">Not scheduled</span>
-                    }
-                </div>
-                <div class="col-md-6">
-                    <strong>End Time:</strong>
-                    @if (Model.Item.AuctionEvent != null)
-                    {
-                        <span>@Model.Item.AuctionEvent.EndTime.ToString("MM/dd/yyyy hh:mm tt")</span>
-                    }
-                    else
-                    {
-                        <span class="text-muted">Not scheduled</span>
+                
+                <div class="alert alert-@(Model.Item.AuctionEvent.IsActive ? "success" : "warning") mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    @if (Model.Item.AuctionEvent?.Status == AuctionEvent.AuctionEventStatus.Completed) {
+                        <span>Auction completed</span>
+                    } else if (DateTime.UtcNow < Model.Item.AuctionEvent?.StartTime) {
+                        <span>Auction starts</span>
+                    } else {
+                        <span>Auction @Model.Item.AuctionEvent.Status.ToString().ToLower()</span>
                     }
                 </div>
             </div>
+
+            @if (Model.Item.AuctionEvent?.Status == AuctionEvent.AuctionEventStatus.Completed) {
+                <div class="winner-card">
+                    <h4><i class="fas fa-trophy me-2"></i>Auction Winner</h4>
+                    @if (Model.Item.Winner != null) {
+                        <div class="h3 text-success mb-2">@Model.Item.Winner.UserName</div>
+                        <div class="h5 mb-3">Winning Bid: @Model.Item.Bids?.Max(b => b.Amount)?.ToString("C")</div>
+                        <small class="text-muted">
+                            Ended on @Model.Item.AuctionEvent.EndTime.ToString("MMM dd, yyyy")
+                        </small>
+                    } else {
+                        <div class="text-muted">No winning bids</div>
+                    }
+                </div>
+            }
+
+            @if (Model.Item.AuctionEvent.IsActive) {
+                <div class="bid-form">
+                    <h4 class="mb-4"><i class="fas fa-hand-holding-usd me-2"></i>Place Bid</h4>
+                    <form method="post">
+                        <div class="mb-4">
+                            <label class="form-label">Bid Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Ksh</span>
+                                <input asp-for="BidAmount" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="Enter bid amount">
+                            </div>
+                            <span asp-validation-for="BidAmount" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-gavel me-2"></i>Submit Bid
+                        </button>
+                    </form>
+
+                    @if (User.IsInRole("Seller") && Model.Item.SellerId == Model.Seller?.Id) {
+                        <form method="post" asp-page-handler="EndAuction" class="mt-3">
+                            <input type="hidden" name="id" value="@Model.Item.Id" />
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-stop-circle me-2"></i>End Auction Early
+                            </button>
+                        </form>
+                    }
+                </div>
+            }
         </div>
-
-        @if (Model.Item.AuctionEvent?.Status == AuctionEvent.AuctionEventStatus.Completed)
-        {
-            <p>Winning Bid: @Model.Item.Bids?.FirstOrDefault()?.Amount?.ToString("C")</p>
-        }
-
-        @if (Model.Item.AuctionEvent?.Status == AuctionEvent.AuctionEventStatus.Completed && Model.Item.Winner != null)
-        {
-          @*   <div class="mt-4 p-3 bg-light rounded">
-                <h4>Auction Winner</h4>
-                <p class="lead">Congratulations!! @Model.Item.Winner.UserName</p>
-                <small class="text-muted">Auction ended on: @Model.Item.AuctionEvent.EndTime.ToString("MM/dd/yyyy hh:mm tt")</small>
-            </div>
- *@
-            @if (Model.Item.Winner != null)
-            {
-                <div class="mt-4 p-3 bg-light rounded">
-                    <h4>Auction Winner</h4>
-                    <h4>Winner: @Model.Item.Winner.UserName</h4>
-                   @*  <p>Winning Bid: @Model.Item.Bids?.FirstOrDefault()?.Amount?.ToString("C")</p> *@
-                    <small class="text-muted">Auction ended on: @Model.Item.AuctionEvent.EndTime.ToString("MM/dd/yyyy hh:mm tt")</small>
-                </div>
-            }
-            else
-            {
-                <p>No bids were placed.</p>
-            }
-    
-
-        }
-
-       
-
-        <!-- Display bidding form (only if auction is active) -->
-        @if (Model.Item.AuctionEvent.IsActive)
-        {
-            <form method="post">
-                <div class="form-group">
-                    <label asp-for="BidAmount" class="control-label"></label>
-                    <input asp-for="BidAmount" class="form-control" />
-                    <span asp-validation-for="BidAmount" class="text-danger"></span>
-                </div>
-                <button type="submit" class="btn btn-primary">Place Bid</button>
-            </form>
-
-            <!-- Button for seller to end the auction -->
-            @if (User.IsInRole("Seller") && Model.Item.SellerId == Model.Seller?.Id)
-            {
-                <form method="post" asp-page-handler="EndAuction">
-                    <input type="hidden" name="id" value="@Model.Item.Id" />
-                    <button type="submit" class="btn btn-danger">End Auction</button>
-                </form>
-            }
-        }
-        else
-        {
-            <div class="alert alert-warning">
-                Bidding is closed. Auction @(Model.Item.AuctionEvent.Status.ToString().ToLower()).
-            </div>
-        }
-
-
     </div>
-</div>
-</div>
 
-<h3 class="text-center">Bid History</h3>
-<div class="product-page">
     <!-- Bid History -->
-    @if (Model.Item.Bids != null && Model.Item.Bids.Any())
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Bidder</th>
-                    <th>Amount</th>
-                    <th>Bid Time</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var bid in Model.Item.Bids.OrderByDescending(b => b.Amount))
-                {
+    <h3 class="mb-4"><i class="fas fa-history me-2"></i>Bid History</h3>
+    <div id="printable-bids">
+    @if (Model.Item.Bids != null && Model.Item.Bids.Any()) {
+        <div class="bid-history-table">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
                     <tr>
-                        <td>@bid.Buyer?.UserName</td>
-                        <td>@bid.Amount?.ToString("C")</td>
-                        <td>@bid.BidTime.ToString("g")</td>
-                        <td>
-                            @if (bid.BuyerId == UserManager.GetUserId(User))
-                            {
-                                @if (Model.Item.AuctionEvent.Status == AuctionEvent.AuctionEventStatus.Active)
-                                {
-                                    <form method="post" asp-page-handler="RemoveBid">
-                                        <input type="hidden" name="bidId" value="@bid.Id" />
-                                        <button type="submit" class="btn btn-danger">Remove</button>
-                                    </form>
-                                }
-                            }
-                            else
-                            {
-                                <span>Not your bid</span>
-                            }
-                        </td>
+                        <th>Bidder</th>
+                        <th>Amount</th>
+                        <th>Time</th>
+                        <th>Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var bid in Model.Item.Bids.OrderByDescending(b => b.Amount)) {
+                        <tr>
+                            <td>@bid.Buyer?.UserName</td>
+                            <td class="fw-bold">@bid.Amount?.ToString("C")</td>
+                            <td>@bid.BidTime.ToString("MMM dd, HH:mm")</td>
+                            <td>
+                                @if (bid.BuyerId == UserManager.GetUserId(User)) {
+                                    @if (Model.Item.AuctionEvent.Status == AuctionEvent.AuctionEventStatus.Active) {
+                                        <form method="post" asp-page-handler="RemoveBid">
+                                            <input type="hidden" name="bidId" value="@bid.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    } else {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>No bids placed yet
+        </div>
     }
-    else
-    {
-        <p>No bids have been placed yet.</p>
-    }
-
-
-</div>
-
-
-@if (Model.Item.AuctionEvent.Status == AuctionEvent.AuctionEventStatus.Completed && Model.IsWinner && !Model.HasFeedback)
-{
-    <div class="alert alert-success mt-4">
-        <h5>Congratulations! You won this auction!</h5>
-        <p>Please share your experience with the seller.</p>
-        <a asp-page="./Feedback/Create"
-           asp-route-itemId="@Model.Item.Id"
-           class="btn btn-primary">
-            <i class="bi bi-star-fill"></i> Leave Feedback
-        </a>
     </div>
 
-}
 
-@* @section Scripts {
-<script>
+    @* Download PDF Button *@
+    <div class="text-end mt-3">
+        <button onclick="downloadBidHistoryPDF()" class="btn btn-outline-primary">
+            <i class="fas fa-file-pdf me-1"></i> Downlad Bid History PDF
+        </button>
+    </div>
 
-    function initializeAuctionTimer(endTimeUtc) {
-        // Convert the UTC end time to a JavaScript Date object
-        const endTime = new Date(endTimeUtc);
-
-        // Get the timer display element
-        const timerElement = document.getElementById('auction-timer');
-
-        // Update the timer every second
-        const timerInterval = setInterval(function() {
-            // Get current time
-            const now = new Date();
-
-            // Calculate the time difference in milliseconds
-            let timeDiff = endTime - now;
-
-            // If time is up
-            if (timeDiff <= 0) {
-                clearInterval(timerInterval);
-                timerElement.innerHTML = '<span class="text-danger">Auction Ended</span>';
-
-                // You might want to disable bidding buttons here
-                const bidButtons = document.querySelectorAll('.bid-button');
-                bidButtons.forEach(button => {
-                    button.disabled = true;
-                });
-
-                // Optionally trigger a page refresh to show the final state
-                setTimeout(() => {
-                    location.reload();
-                }, 3000);
-
-                return;
-            }
-
-            // Calculate days, hours, minutes, seconds
-            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-            // Format the timer display
-            let timerText = '';
-            if (days > 0) {
-                timerText += `${days}d `;
-            }
-            timerText += `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-            // Update the timer display
-            timerElement.textContent = timerText;
-
-            // Change color when time is running out (less than 5 minutes)
-            if (timeDiff < 5 * 60 * 1000) {
-                timerElement.classList.add('text-danger');
-                timerElement.classList.add('blink');
-            }
-        }, 1000);
-    }
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    @if (Model.AuctionEvent.EndTime > DateTime.UtcNow && Model.AuctionEvent.StartTime <= DateTime.UtcNow)
-    {
-        <text>
-                // Initialize the timer with the end time in ISO format
-                initializeAuctionTimer('@Model.AuctionEvent.EndTime.ToString("o")');
-        </text>
-    }
-    else if (Model.AuctionEvent.EndTime <= DateTime.UtcNow)
-    {
-        <text>
-                document.getElementById('auction-timer').innerHTML = '<span class="text-danger">Auction Ended</span>';
-        </text>
-    }
-    else
-    {
-        <text>
-                document.getElementById('auction-timer').innerHTML = '<span class="text-warning">Auction Not Started</span>';
-                // Optionally add a timer for when the auction will start
-        </text>
-    }
-    });
-</script>
-} *@
+</div>
