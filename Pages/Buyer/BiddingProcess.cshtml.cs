@@ -36,6 +36,8 @@ namespace Auction_System.Pages.Buyer
 		[BindProperty]
 		public decimal BidAmount { get; set; }
 
+		public List<Category> Categories { get; set; }
+
 
 		[BindProperty]
 		public AuctionEvent AuctionEvent { get; set; }
@@ -62,6 +64,8 @@ namespace Auction_System.Pages.Buyer
 				return NotFound();
 			}
 
+			// Fetch categories from the database
+			Categories = await _context.Categories.ToListAsync();
 
 
 			// Check if Seller is null
