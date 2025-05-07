@@ -28,6 +28,11 @@
                     <a asp-page="/Admin/BuyerPurchaseHistory" asp-route-id="@buyer.Id" class="btn btn-sm btn-primary">
                         View Purchase History
                     </a>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@buyer.Id" style="display:inline;"
+                          onsubmit="return confirm('Are you sure you want to delete this buyer?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+
                 </td>
             </tr>
         }

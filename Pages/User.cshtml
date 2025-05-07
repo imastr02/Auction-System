@@ -4,14 +4,7 @@
 	ViewData["Title"] = "Profile";
 }
 
-<div>
-	
-	<ul>
-		@foreach(var role in Model.UserRoles) {
-			<li>@role</li>
-		}
-	</ul>
-</div>
+<
 
 <div class="container mt-4">
     <div class="row">
@@ -24,6 +17,9 @@
                     <dl class="row">
                         <dt class="col-sm-4">Username:</dt>
                         <dd class="col-sm-8">@Model.CurrentUser.UserName</dd>
+
+                        <dt class="col-sm-4">Admission Number:</dt>
+                        <dd class="col-sm-8">@Model.CurrentUser.AdmissionNumber</dd>
 
                         <dt class="col-sm-4">Email:</dt>
                         <dd class="col-sm-8">
@@ -42,6 +38,7 @@
                         <dd class="col-sm-8">
                             @(Model.CurrentUser.PhoneNumber ?? "Not provided")
                         </dd>
+                        
 
                         <dt class="col-sm-4">Joined:</dt>
                         <dd class="col-sm-8">
@@ -62,9 +59,9 @@
                         <a asp-area="Identity" asp-page="/Account/Manage/Index" class="list-group-item list-group-item-action">
                             <i class="fas fa-user-edit me-2"></i>Edit Profile
                         </a>
-                        <a asp-area="Identity" asp-page="/Account/Manage/Email" class="list-group-item list-group-item-action">
+                      @*   <a asp-area="Identity" asp-page="/Account/Manage/Email" class="list-group-item list-group-item-action">
                             <i class="fas fa-envelope me-2"></i>Change Email
-                        </a>
+                        </a> *@
                         <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="list-group-item list-group-item-action">
                              <i class="fas fa-lock me-2"></i> Change Password
                         </a> 

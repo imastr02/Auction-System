@@ -22,5 +22,23 @@ namespace Auction_System.Pages.Admin
 			var users = await _userManager.GetUsersInRoleAsync("Buyer");
 			Buyers = users.ToList();
 		}
+
+		public async Task<IActionResult> OnPostDeleteAsync(string id)
+		{
+			var buyer = await _userManager.FindByIdAsync(id);
+			if (buyer == null)
+			{
+				return NotFound();
+			}
+
+			var result = await _userManager.DeleteAsync(buyer);
+			if (!result.Succeeded)
+			{
+				ModelState.AddModelError(string.Empty, "Failed to delete buyer.");
+			}
+
+			return RedirectToPage(); // Refresh the page
+		}
+
 	}
 }

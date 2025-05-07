@@ -308,6 +308,14 @@
                 </div>
 
                 <div class="input-row">
+                    <input asp-for="Input.AdmissionNumber"
+                           placeholder="Admission Number (COM/001/21)"
+                           pattern="[A-Z]{3}/\d{3}/\d{2}"
+                           title="Format: COM/001/21"
+                           required />
+                </div>
+
+                <div class="input-row">
                     <input asp-for="Input.PhoneNumber" placeholder="Phone Number" required />
                     <input asp-for="Input.City" placeholder="City" required />
                 </div>

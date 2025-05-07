@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auction_System.Models
 {
 	public class AppUser : IdentityUser
 	{
+		[Required]
+		[StringLength(10)]
+		[RegularExpression(@"^[A-Z]{3}/\d{3}/\d{2}$",
+		 ErrorMessage = "Admission number must be in format COM/001/21")]
+		public string AdmissionNumber { get; set; }
 		public string? FirstName { get; set; }
 		public string? LastName { get; set; }	
 		public string? City { get; set; }

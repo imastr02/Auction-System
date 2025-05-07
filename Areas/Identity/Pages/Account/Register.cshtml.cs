@@ -74,12 +74,20 @@ namespace Auction_System.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+			/// <summary>
+			///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+			///     directly from your code. This API may change or be removed in future releases.
+			/// </summary>
+			 
+			// Add this property
+			[Required]
+			[Display(Name = "Admission Number")]
+			[RegularExpression(@"^[A-Z]{3}/\d{3}/\d{2}$",
+			 ErrorMessage = "Must be in format COM/001/21")]
+			public string AdmissionNumber { get; set; }
 
-            [Required]
+
+			[Required]
             public string FirstName {  get; set; }
 
             [Required]
@@ -138,6 +146,7 @@ namespace Auction_System.Areas.Identity.Pages.Account
                     LastName = Input.LastName,
                     UserName = Input.Email,
                     Email = Input.Email,
+                    AdmissionNumber = Input.AdmissionNumber,
                     PhoneNumber = Input.PhoneNumber,
                     City = Input.City,
                     CreatedAt = DateTime.Now

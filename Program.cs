@@ -45,23 +45,7 @@ builder.Services.AddSession(options =>
 });
 
 
-builder.Services.AddHttpClient<IMpesaService, MpesaService>("Mpesa", client =>
-{
-	client.BaseAddress = new Uri("https://sandbox.safaricom.co.ke/");
-}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-{
-	ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-});
-builder.Services.AddScoped<IMpesaService>(provider =>
-{
-	var config = provider.GetRequiredService<IConfiguration>();
-	var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
 
-	return new MpesaService(
-		config,
-		httpClientFactory.CreateClient("Mpesa"), // Use named client
-		provider.GetRequiredService<ApplicationDbContext>());
-});
 
 
 builder.Services.AddScoped<RatingService>();
