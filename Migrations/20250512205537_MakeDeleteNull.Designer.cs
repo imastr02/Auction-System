@@ -4,6 +4,7 @@ using Auction_System.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512205537_MakeDeleteNull")]
+    partial class MakeDeleteNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,16 +237,6 @@ namespace Auction_System.Migrations
                         {
                             Id = 3,
                             CategoryName = "Others"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryName = "Laptops"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryName = "Furnitures"
                         });
                 });
 
@@ -724,7 +717,7 @@ namespace Auction_System.Migrations
                     b.HasOne("Auction_System.Models.AppUser", "Buyer")
                         .WithMany("Bids")
                         .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Auction_System.Models.Item", "Item")
                         .WithMany("Bids")
@@ -741,8 +734,7 @@ namespace Auction_System.Migrations
                 {
                     b.HasOne("Auction_System.Models.AppUser", "Buyer")
                         .WithMany()
-                        .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("BuyerId");
 
                     b.HasOne("Auction_System.Models.Item", "Item")
                         .WithMany("Feedbacks")
@@ -841,8 +833,7 @@ namespace Auction_System.Migrations
 
                     b.HasOne("Auction_System.Models.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Item");
 

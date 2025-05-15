@@ -1,119 +1,126 @@
-﻿ @page
-@using Microsoft.AspNetCore.Identity;
-@using Auction_System.Models;
-
+﻿
+ @page
+@using Microsoft.AspNetCore.Identity
+@using Auction_System.Models
 @model IndexModel
 
-@inject SignInManager<AppUser> SignInManager;
-@inject UserManager<AppUser> UserManager;
-
-@{
-    ViewData["Title"] = "Home page";
-}
-@* 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
- *@
-
-
-@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-{
-    <div class="container mt-4">
-        <h4>Admin Dashboard</h4>
-        <ul class="list-group">
-            <li class="list-group-item">
-                <a asp-page="/Admin/ViewSellers" class="btn btn-link">View All Sellers</a>
-            </li>
-            <li class="list-group-item">
-                <a asp-page="/Admin/ViewBuyers" class="btn btn-link">View All Buyers</a>
-            </li>
-        </ul>
-    </div>
-}
-
-
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
 @{
     ViewData["Title"] = "University Auction System";
 }
+<style>
+    .offcanvas {
+        background-color: #f8f9fa;
+    }
+</style>
 
-<!-- Hero Section -->
-<div class="container-fluid bg-primary text-white py-5">
-    <div class="container text-center">
-        <h1 class="display-4 mb-4">🎓 Welcome to Campus Marketplace!</h1>
+<!-- ADMIN SIDEBAR TOGGLE + OFFCANVAS -->
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <button class="btn btn-dark m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar" aria-controls="adminSidebar">
+        ☰ Admin Menu
+    </button>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="adminSidebar" aria-labelledby="adminSidebarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="adminSidebarLabel">📋 Admin Panel</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a asp-page="/Admin/ViewSellers" class="nav-link text-dark">👤 View All Sellers</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a asp-page="/Admin/ViewBuyers" class="nav-link text-dark">🧑‍🎓 View All Buyers</a>
+                </li>
+               
+            </ul>
+        </div>
+    </div>
+}
+
+<!-- MAIN LANDING CONTENT -->
+<div class="container-fluid bg-primary text-white text-center py-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">🎓 Welcome to Campus Marketplace</h1>
         <p class="lead mb-4">
-            The official auction platform for university students to buy, sell, and trade campus essentials
+            The official auction platform for university students to buy, sell, and trade campus essentials.
         </p>
         <div class="row g-4 justify-content-center">
             <div class="col-lg-3 col-md-6">
-                <div class="h-100 p-4 bg-white text-dark rounded-3">
+                <div class="h-100 bg-white text-dark rounded-4 p-4 shadow-sm">
                     <i class="bi bi-book fs-1 text-primary"></i>
-                    <h3 class="my-3">Textbooks</h3>
-                    <p>Buy & sell used course materials at student-friendly prices</p>
+                    <h4 class="my-3">Textbooks</h4>
+                    <p>Buy & sell used course materials affordably</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="h-100 p-4 bg-white text-dark rounded-3">
+                <div class="h-100 bg-white text-dark rounded-4 p-4 shadow-sm">
                     <i class="bi bi-laptop fs-1 text-primary"></i>
-                    <h3 class="my-3">Electronics</h3>
-                    <p>Find affordable laptops, gadgets, and tech accessories</p>
+                    <h4 class="my-3">Electronics</h4>
+                    <p>Find affordable laptops, gadgets, and accessories</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="h-100 p-4 bg-white text-dark rounded-3">
+                <div class="h-100 bg-white text-dark rounded-4 p-4 shadow-sm">
                     <i class="bi bi-bicycle fs-1 text-primary"></i>
-                    <h3 class="my-3">Campus Gear</h3>
-                    <p>Bikes, furniture, and everything for dorm life</p>
+                    <h4 class="my-3">Campus Gear</h4>
+                    <p>Get bikes, furniture, and essentials for dorm life</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- How It Works Section -->
 <div class="container py-5">
-    <h2 class="text-center mb-5">Student-Friendly Features</h2>
+    <h2 class="text-center mb-5 fw-semibold">Why Choose Our Platform?</h2>
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="card h-100 border-0">
-                <div class="card-body text-center">
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body">
                     <i class="bi bi-patch-check fs-1 text-success"></i>
                     <h5 class="card-title mt-3">Verified .edu Accounts</h5>
-                    <p class="card-text">Secure trading with university-verified student accounts</p>
+                    <p class="card-text">Trade securely with verified university students.</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100 border-0">
-                <div class="card-body text-center">
-                    <i class="bi bi-cash-coin fs-1 text-warning"></i>
-                    <h5 class="card-title mt-3">Campus Pickup</h5>
-                    <p class="card-text">Meet safely on campus for item exchange</p>
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <i class="bi bi-geo-alt fs-1 text-warning"></i>
+                    <h5 class="card-title mt-3">On-Campus Pickup</h5>
+                    <p class="card-text">Convenient meetups within your university.</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100 border-0">
-                <div class="card-body text-center">
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body">
                     <i class="bi bi-shield-lock fs-1 text-info"></i>
                     <h5 class="card-title mt-3">Secure Payments</h5>
-                    <p class="card-text">Escrow system protects both buyers and sellers</p>
+                    <p class="card-text">Escrow system ensures safe transactions.</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Call to Action -->
-    <div class="text-center mt-5">
-        <h3 class="mb-4">Ready to Start Trading?</h3>
-        <a href="/Buyer/ViewItems" class="btn btn-lg btn-primary me-3">
-            <i class="bi bi-search"></i> Browse Listings
-        </a>
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-lg btn-outline-secondary">
-            <i class="bi bi-person-plus"></i> Create Student Account
-        </a>
-    </div>
 </div>
- 
+
+<div class="text-center mt-5 pb-5">
+    <h3 class="mb-4 fw-bold">Ready to Start Bidding?</h3>
+    <a href="/Buyer/ViewItems" class="btn btn-lg btn-primary me-3 px-4">
+        <i class="bi bi-search"></i> Browse Auctions
+    </a>
+    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-lg btn-outline-secondary px-4">
+        <i class="bi bi-person-plus"></i> Join Now
+    </a>
+</div>
+<div class="text-center mt-4">
+    <p class="mb-2 fw-semibold">Need help or have questions?</p>
+    <a href="mailto:admin@gmail.com" class="btn btn-outline-dark px-4">
+        <i class="bi bi-envelope-fill me-1"></i> Contact Admin
+    </a>
+</div>
+

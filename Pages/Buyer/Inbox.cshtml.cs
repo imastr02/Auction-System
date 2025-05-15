@@ -15,6 +15,9 @@ namespace Auction_System.Pages.Buyer
 
 		public List<Notification> Notifications { get; set; } = new();
 		public Item SelectedItem { get; set; }
+		
+		public string? CurrentUserId { get; set; }
+
 
 		public InboxModel(ApplicationDbContext context, UserManager<AppUser> userManager)
 		{
@@ -30,6 +33,8 @@ namespace Auction_System.Pages.Buyer
 				RedirectToPage("/Login");
 			}
 
+			CurrentUserId = user.Id;
+
 			// Always load notifications
 			Notifications = await _context.Notifications
 				.Where(n => n.UserId == user.Id)
@@ -40,23 +45,7 @@ namespace Auction_System.Pages.Buyer
 				.ToListAsync();
 
 
-			//// Mark notification as read if viewing details
-			//if (itemId.HasValue)
-			//{
-			//	var notification = Notifications.FirstOrDefault(n => n.ItemId == itemId);
-			//	if (notification != null && !notification.IsRead)
-			//	{
-			//		notification.IsRead = true;
-			//		await _context.SaveChangesAsync();
-			//	}
-
-			//	// In your page model
-			//	SelectedItem = await _context.Items
-			//		.Include(i => i.Seller)
-			//		.Include(i => i.Bids)
-			//		.Include(i => i.AuctionEvent)
-			//		.FirstOrDefaultAsync(i => i.Id == itemId);
-			//}
+		
 
 			// Only load item details if ID is provided
 			if (itemId.HasValue)

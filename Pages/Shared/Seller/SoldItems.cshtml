@@ -1,0 +1,307 @@
+﻿@* @page
+@model Auction_System.Pages.Seller.SoldItemsModel
+@{
+    ViewData["Title"] = "Sold Items";
+}
+
+<div class="container">
+    <h2>Your Sold Items</h2>
+
+    @if (!Model.SoldItems.Any())
+    {
+        <div class="alert alert-info">
+            You haven't sold any items yet.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model.SoldItems)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <!-- Item Image -->
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@Url.Content(item.ImagePath)"
+                                 class="card-img-top"
+                                 alt="@item.Title"
+                                 style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="text-center py-5 bg-light">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                                <p class="mt-2">No Image Available</p>
+                            </div>
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">@item.Description</p>
+
+                            <div class="seller-details mt-4">
+                                <h6>Buyer Information:</h6>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fas fa-user"></i>
+                                        @item.Winner?.UserName
+                                    </li>
+                                    @if (!string.IsNullOrEmpty(item.Winner?.Email))
+                                    {
+                                        <li>
+                                            <i class="fas fa-envelope"></i>
+                                            <a href="mailto:@item.Winner.Email">
+                                                @item.Winner.Email
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.Winner?.PhoneNumber))
+                                    {
+                                        <li>
+                                            <i class="fas fa-phone"></i>
+                                            <a href="tel:@item.Winner.PhoneNumber">
+                                                @item.Winner.PhoneNumber
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-white">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5">Sold Amount:</dt>
+                                <dd class="col-sm-7">@item.EndingPrice.ToString("C")</dd>
+
+                                <dt class="col-sm-5">Sold Date:</dt>
+                                <dd class="col-sm-7">@item.AuctionEvent.EndTime.ToString("g")</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .seller-details {
+        border-top: 1px solid #eee;
+        padding-top: 1rem;
+    }
+
+    .list-unstyled li {
+        padding: 0.25rem 0;
+    }
+
+    .fa {
+        width: 1.25rem;
+        color: #6c757d;
+    }
+</style> *@
+
+
+@page
+@model Auction_System.Pages.Seller.SoldItemsModel
+@{
+    ViewData["Title"] = "Sold Items";
+}
+<head>
+    <style>
+        .card {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .seller-details {
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+
+        .list-unstyled li {
+            padding: 0.25rem 0;
+        }
+
+        .fa {
+            width: 1.25rem;
+            color: #6c757d;
+        }
+
+        .delivery-form button {
+            transition: all 0.3s ease;
+        }
+
+            .delivery-form button:not(.disabled):hover {
+                transform: scale(1.05);
+            }
+
+        .delivery-form .btn-success.disabled {
+            opacity: 0.9;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<div class="container">
+    <h2>Your Sold Items</h2>
+
+    @if (!Model.SoldItems.Any())
+    {
+        <div class="alert alert-info">
+            You haven't sold any items yet.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model.SoldItems)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <!-- Item Image -->
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@Url.Content(item.ImagePath)"
+                                 class="card-img-top"
+                                 alt="@item.Title"
+                                 style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="text-center py-5 bg-light">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                                <p class="mt-2">No Image Available</p>
+                            </div>
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">@item.Description</p>
+
+                            <div class="seller-details mt-4">
+                                <h6>Buyer Information:</h6>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fas fa-user"></i>
+                                        @item.Winner?.UserName
+                                    </li>
+                                    @if (!string.IsNullOrEmpty(item.Winner?.Email))
+                                    {
+                                        <li>
+                                            <i class="fas fa-envelope"></i>
+                                            <a href="mailto:@item.Winner.Email">
+                                                @item.Winner.Email
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.Winner?.PhoneNumber))
+                                    {
+                                        <li>
+                                            <i class="fas fa-phone"></i>
+                                            <a href="tel:@item.Winner.PhoneNumber">
+                                                @item.Winner.PhoneNumber
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-white">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5">Sold Amount:</dt>
+                                <dd class="col-sm-7">@item.EndingPrice.ToString("C")</dd>
+
+                                <dt class="col-sm-5">Sold Date:</dt>
+                                <dd class="col-sm-7">@item.AuctionEvent.EndTime.ToString("g")</dd>
+
+                                @if (item.IsDelivered)
+                                {
+                                    <dt class="col-sm-5">Delivered On:</dt>
+                                    <dd class="col-sm-7">@item.DeliveryDate?.ToString("g")</dd>
+                                }
+                            </dl>
+
+                            <form method="post" asp-page-handler="MarkAsDelivered"
+                                  class="delivery-form text-center mt-3"
+                                  data-item-id="@item.Id">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="itemId" value="@item.Id" />
+                                <button type="submit"
+                                        class="btn @(item.IsDelivered ? "btn-success disabled" : "btn-primary")
+                                               w-100">
+                                    @if (item.IsDelivered)
+                                    {
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Delivered</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-truck-moving"></i>
+                                        <span>Mark as Delivered</span>
+                                    }
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.delivery-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const button = form.querySelector('button');
+                const itemId = form.dataset.itemId;
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: `itemId=${itemId}`
+                    });
+
+                    if (response.ok) {
+                        button.innerHTML = '<i class="fas fa-check-circle"></i> Delivered';
+                        button.classList.remove('btn-primary');
+                        button.classList.add('btn-success', 'disabled');
+
+                        // Update delivery date display
+                        const deliveryDate = new Date().toLocaleString();
+                        const dateHtml = `
+                            <dt class="col-sm-5">Delivered On:</dt>
+                            <dd class="col-sm-7">${deliveryDate}</dd>
+                        `;
+                        form.previousElementSibling.insertAdjacentHTML('beforeend', dateHtml);
+                    }
+                } catch (error) {
+                    console.error('Delivery update failed:', error);
+                    alert('Failed to update delivery status. Please try again.');
+                }
+            });
+        });
+    </script>
+}
+

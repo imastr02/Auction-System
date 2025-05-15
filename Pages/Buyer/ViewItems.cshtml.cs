@@ -23,6 +23,7 @@ namespace Auction_System.Pages.Buyer
 		[BindProperty(SupportsGet = true)]
 		public string? SortBy { get; set; } // Sorting criteria
 		public Dictionary<int, bool> IsInWatchlist { get; set; } = new Dictionary<int, bool>();
+		public List<Item> LiveAuctions { get; set; }
 
 		public int PageIndex { get; set; } = 1;
 		public int PageSize { get; set; } = 10; // Number of items per page
@@ -99,6 +100,18 @@ namespace Auction_System.Pages.Buyer
 					IsInWatchlist[item.Id] = watchlistItemIds.Contains(item.Id);
 				}
 			}
+
+			var now = DateTime.Now;
+
+			LiveAuctions = await _context.Items
+				.Include(i => i.AuctionEvent)
+				.Include(i => i.Seller)
+				.Where(i => i.StartingTime <= now &&
+							i.AuctionEvent.EndTime >= now &&
+							!i.IsSold)
+				.OrderBy(i => i.EndingTime)
+				.Take(6)
+				.ToListAsync();
 		}
 	}
 

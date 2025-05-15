@@ -162,38 +162,7 @@ namespace Auction_System.Pages.Buyer
 				return Page();
 			}
 
-			//// Validate bid amount
-			//var highestBid = item.Bids?.OrderByDescending(b => b.Amount).FirstOrDefault();
-			//decimal currentHighestBid = highestBid?.Amount ?? 0;
-
-			//// Check if the bid is greater than or equal to the starting price
-			//if (BidAmount < item.StartingPrice)
-			//{
-			//	ModelState.AddModelError("BidAmount", $"Your bid must be greater than or equal to the starting price of {item.StartingPrice:C}.");
-			//	//AuctionStatus = item.GetAuctionStatus();
-			//	Item = item; // Reload the item for the page
-			//	return Page();
-			//}
-
-			//// Check if the bid is higher than the current highest bid
-			//if (highestBid != null && BidAmount <= highestBid.Amount)
-			//{
-			//	ModelState.AddModelError("BidAmount", "Your bid must be higher than the current highest bid.");
-			//	Item = item; // Reload the item for the page
-			//	return Page();
-			//}
-
-			//// Add the bid
-			//var bid = new Bid
-			//{
-			//	ItemId = item.Id,
-			//	BuyerId = buyer.Id,
-			//	Amount = BidAmount,
-			//	BidTime = DateTime.Now
-			//};
-
-			//_context.Bids.Add(bid);
-			//await _context.SaveChangesAsync();
+		
 
 			//TempData["Message"] = "Bid placed successfully!";
 			return RedirectToPage("./Details", new { id = item.Id });

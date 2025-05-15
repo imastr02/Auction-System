@@ -38,7 +38,9 @@ namespace Auction_System.Services
 			modelBuilder.Entity<Category>().HasData(
 				new Category { Id = 1,  CategoryName = "Phones" },
 				new Category { Id = 2, CategoryName = "Accessories" },
-				new Category { Id = 3, CategoryName = "Others" }
+				new Category { Id = 3, CategoryName = "Others" },
+				new Category { Id = 4, CategoryName = "Laptops"},
+				new Category { Id = 5, CategoryName = "Furnitures"}
 			);
 
 
@@ -73,9 +75,10 @@ namespace Auction_System.Services
 			modelBuilder.Entity<Item>()
 				   .HasOne(i => i.Winner)
 				   .WithMany(u => u.ItemsWon)
-				   .HasForeignKey(i => i.WinnerId);
+				   .HasForeignKey(i => i.WinnerId)
+				   .OnDelete(DeleteBehavior.SetNull); // Prevent deletion of winner if items exist
 
-			 modelBuilder.Entity<Item>().Property(i => i.IsPaid).HasDefaultValue(false);
+			modelBuilder.Entity<Item>().Property(i => i.IsPaid).HasDefaultValue(false);
 
 			modelBuilder.Entity<WatchList>()
 				.HasOne(w => w.Buyer)
@@ -94,7 +97,7 @@ namespace Auction_System.Services
 				.WithMany(u => u.Bids)
 				.HasForeignKey(b => b.BuyerId)
 				.HasPrincipalKey(u => u.Id)
-				 .OnDelete(DeleteBehavior.NoAction); 
+				 .OnDelete(DeleteBehavior.SetNull); 
 
 			modelBuilder.Entity<Bid>()
 				.HasOne(b => b.Item)
@@ -137,10 +140,21 @@ namespace Auction_System.Services
 			.OnDelete(DeleteBehavior.SetNull); // Prevent seller deletion if auctions exist
 
 			modelBuilder.Entity<Notification>()
-	  .HasOne(n => n.Item)
-	  .WithMany()
-	  .HasForeignKey(n => n.ItemId)
-	  .OnDelete(DeleteBehavior.Cascade);
+		   .HasOne(n => n.User)
+		   .WithMany()
+		   .HasForeignKey(n => n.UserId)
+		   .OnDelete(DeleteBehavior.SetNull);
+
+			modelBuilder.Entity<Notification>()
+				.HasOne(n => n.Item)
+				.WithMany()
+				.HasForeignKey(n => n.ItemId)
+				.OnDelete(DeleteBehavior.SetNull);
+			modelBuilder.Entity<Feedback>()
+	.HasOne(f => f.Buyer)
+	.WithMany()
+	.HasForeignKey(f => f.BuyerId)
+	.OnDelete(DeleteBehavior.SetNull);
 
 
 		}

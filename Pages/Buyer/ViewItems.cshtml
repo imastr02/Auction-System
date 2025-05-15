@@ -1,4 +1,4 @@
-﻿ @page
+﻿@page
 @model Auction_System.Pages.Buyer.ViewItemsModel
 @using Microsoft.AspNetCore.Identity
 @using Auction_System.Models
@@ -6,7 +6,7 @@
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 
-    <style>
+<style>
     .product-image-container {
         height: 180px;
         overflow: hidden;
@@ -29,10 +29,73 @@
             transform: scale(1.03);
         }
 
-    </style>
+    /* Highlight live auctions */
+    .live-auctions {
+        background: #fffbea;
+        border: 2px solid #ffc107;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+        margin-bottom: 3rem;
+    }
+
+    .live-badge {
+        background: #dc3545;
+        color: white;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+        border-radius: 5px;
+        font-weight: bold;
+        animation: pulse 1.2s infinite;
+    }
+
+    
+
+    50% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+
+    }
+</style>
 
 <div class="container mt-3">
     <h4 class="fw-bold">Top Deals | Shop Now</h4>
+
+    @if (Model.LiveAuctions != null && Model.LiveAuctions.Any())
+    {
+        <div class="live-auctions">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-danger fw-bold">🔥 Live Auctions</h2>
+                <span class="live-badge">LIVE</span>
+            </div>
+
+            <div class="row g-4">
+                @foreach (var item in Model.LiveAuctions)
+                {
+                    <div class="col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm border-warning border-2">
+                            <img src="@item.ImagePath" class="card-img-top" style="height: 180px; object-fit: cover;" />
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Title</h5>
+                                <p class="card-text text-muted">@item.Category.CategoryName</p>
+                                <p class="fw-semibold text-danger">Starting: KSh @item.StartingPrice.ToString("N0")</p>
+                                <a asp-page="/Buyer/Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger w-100">
+                                    🔨 Bid Now
+                                </a>
+                            </div>
+                            <div class="card-footer small text-muted text-center">
+                                Ends: @item.AuctionEvent.EndTime.ToLocalTime().ToString("dd MMM, hh:mm tt")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
         @foreach (var item in Model.Items)
@@ -48,8 +111,13 @@
                         <!-- Info -->
                         <div class="card-body p-2">
                             <h6 class="card-title mb-1">@item.Title</h6>
-                            <p class="card-text mb-1"><strong>Date:</strong> @item.AuctionDate.ToShortDateString()</p>
-                            <p class="card-text"><strong>Starting Price:</strong> KSh @item.StartingPrice.ToString("N0")</p>
+                            <p class="card-text mb-1">
+                                <strong>Date:</strong> @item.AuctionDate.ToShortDateString()
+                                <strong class="ms-2">Start:</strong> @item.AuctionEvent?.StartTime.ToShortTimeString()
+                            </p>
+                            <p class="card-text">
+                                <strong>Starting Price:</strong> KSh @item.StartingPrice.ToString("N0")
+                            </p>
                         </div>
                     </div>
                 </a>
@@ -74,6 +142,3 @@
         </li>
     </ul>
 </nav>
-
-
-

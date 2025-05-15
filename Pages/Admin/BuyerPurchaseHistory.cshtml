@@ -6,42 +6,92 @@
     ViewData["Title"] = "Purchase History";
 }
 
-<h3>Purchase History for @Model.Buyer?.UserName</h3>
-
-@if (Model.Purchases.Any())
-{
-    <table class="table table-hover align-middle">
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Item</th>
-                <th>Winning Bid</th>
-                <th>Date Won</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Purchases)
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Purchase History for @Model.Buyer?.UserName</h5>
+            <button class="btn btn-outline-light btn-sm" onclick="downloadPurchaseHistoryPDF()">
+                <i class="bi bi-download"></i> Export PDF
+            </button>
+        </div>
+        <div class="card-body" id="printable-history">
+            @if (Model.Purchases.Any())
             {
-                <tr>
-                    <td style="width: 100px;">
-                        <a asp-page="/Buyer/Details" asp-route-id="@item.Id">
-                            <img src="@item.ImagePath" alt="@item.Title" class="img-thumbnail" style="height: 80px; width: 80px; object-fit: cover;" />
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-page="/Buyer/Details" asp-route-id="@item.Id" class="text-decoration-none">
-                            @item.Title
-                        </a>
-                    </td>
-                    <td>KSh @item.EndingPrice.ToString("N0")</td>
-                    <td>@item.SoldAt?.ToShortDateString()</td>
-                </tr>
+                <table class="table table-bordered table-striped align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Image</th>
+                            <th>Item</th>
+                            <th>Winning Bid</th>
+                            <th>Date Won</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Purchases)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-page="/Buyer/Details" asp-route-id="@item.Id">
+                                        <img src="@item.ImagePath" alt="@item.Title"
+                                             class="img-thumbnail rounded"
+                                             style="height: 80px; width: 80px; object-fit: cover;" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a asp-page="/Buyer/Details" asp-route-id="@item.Id"
+                                       class="text-decoration-none fw-semibold">
+                                        @item.Title
+                                    </a>
+                                </td>
+                                <td>KSh @item.EndingPrice.ToString("N0")</td>
+                                <td>@item.SoldAt?.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
-        </tbody>
-    </table>
+            else
+            {
+                <div class="alert alert-info">This buyer has not won any auctions yet.</div>
+            }
+        </div>
+    </div>
+</div>
 
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        async function downloadPurchaseHistoryPDF() {
+            const { jsPDF } = window.jspdf;
+            const content = document.getElementById("printable-history");
+
+            const canvas = await html2canvas(content, { scale: 2 });
+            const imgData = canvas.toDataURL("image/png");
+
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pageWidth = pdf.internal.pageSize.getWidth();
+
+            const buyerName = "@Model.Buyer?.UserName".replace(/['"]/g, '');
+            const currentDate = new Date().toLocaleDateString();
+
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(16);
+            pdf.text("Purchase History Report", pageWidth / 2, 15, { align: "center" });
+
+            pdf.setFontSize(12);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(`Buyer: ${buyerName}`, 10, 25);
+            pdf.text(`Date: ${currentDate}`, 10, 32);
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pageWidth - 20;
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            pdf.addImage(imgData, "PNG", 10, 40, pdfWidth, pdfHeight);
+            pdf.save("PurchaseHistory.pdf");
+        }
+    </script>
 }
-else
-{
-    <p class="text-muted">This buyer has not won any auctions yet.</p>
-}
+
